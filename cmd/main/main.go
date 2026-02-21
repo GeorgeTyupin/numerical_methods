@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"time"
 
 	"github.com/GeorgeTyupin/numerical_methods/internal/api"
 	"github.com/GeorgeTyupin/numerical_methods/internal/config"
@@ -30,7 +29,7 @@ func main() {
 
 	select {
 	case <-signalCh:
-		stopCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		stopCtx, cancel := context.WithTimeout(context.Background(), cfg.Server.Timeouts.Shutdown)
 		defer cancel()
 
 		if err := server.Stop(stopCtx); err != nil {

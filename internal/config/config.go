@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
 )
@@ -18,7 +19,12 @@ type Config struct {
 }
 
 type ServerConfig struct {
-	Port string `yaml:"port"`
+	Port     string               `yaml:"port"`
+	Timeouts ServerTimeoutsConfig `yaml:"timeouts"`
+}
+
+type ServerTimeoutsConfig struct {
+	Shutdown time.Duration `yaml:"shutdown"`
 }
 
 func MustLoad(logger *slog.Logger) *Config {

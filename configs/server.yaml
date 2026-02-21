@@ -1,2 +1,4 @@
 http_server:
   port: ":5000"
+  timeouts:
+    shutdown: 5s
