@@ -63,6 +63,10 @@ func registerRoutes() *chi.Mux {
 
 	r.Get("/", handlers.Index)
 
+	// Раздача статических файлов (CSS, JS)
+	fs := http.FileServer(http.Dir("static"))
+	r.Handle("/static/*", http.StripPrefix("/static/", fs))
+
 	r.Route("/api/v1/calculate", func(r chi.Router) {
 		r.Route("/task4", func(r chi.Router) {
 			r.Post("/bisection", handlers.Bisection)

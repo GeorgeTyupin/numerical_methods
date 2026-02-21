@@ -41,11 +41,11 @@ func MustLoad(logger *slog.Logger) *Config {
 }
 
 func LoadConfig() (*Config, error) {
-	var config *Config
+	var config Config
 
-	if err := cleanenv.ReadConfig(configPath, config); err != nil {
+	if err := cleanenv.ReadConfig(configPath, &config); err != nil {
 		return nil, fmt.Errorf("не получилось загрузить конфигурацию. Возникла ошибка: %w", err)
 	}
 
-	return config, nil
+	return &config, nil
 }
