@@ -64,8 +64,11 @@ func registerRoutes() *chi.Mux {
 	r.Get("/", handlers.Index)
 
 	r.Route("/api/v1/calculate", func(r chi.Router) {
-		r.Post("/bisection", handlers.Bisection)
-		r.Post("/newton", handlers.Newton)
+		r.Route("/task4", func(r chi.Router) {
+			r.Post("/bisection", handlers.Bisection)
+			r.Post("/newton", handlers.Newton)
+			r.Post("/simple_iter", handlers.SimpleIter)
+		})
 	})
 
 	return r

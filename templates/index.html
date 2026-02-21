@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Numerical Methods Visualization</title>
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Plotly.js (CDN) -->
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    <!-- Google Fonts (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+    
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            base: '#0b0f19',    /* Очень темный фон */
+                            surface: '#151b2b', /* Чуть светлее для панелей */
+                            accent: '#00f0ff',  /* Неоновый голубой (стиль Cyberpunk/Sci-Fi) */
+                            glow: '#7000ff',    /* Неоновый фиолетовый */
+                        }
+                    },
+                    boxShadow: {
+                        'neon': '0 0 15px rgba(0, 240, 255, 0.5), 0 0 30px rgba(112, 0, 255, 0.3)',
+                        'panel': '0 4px 30px rgba(0, 0, 0, 0.5)',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-brand-base text-gray-200 font-sans h-screen flex overflow-hidden antialiased items-center justify-center p-4 lg:p-8">
+    
+    <!-- Фоновые декоративные свечения -->
+    <div class="fixed top-[-100px] left-[-100px] w-96 h-96 bg-brand-accent opacity-20 blur-[100px] rounded-full pointer-events-none"></div>
+    <div class="fixed bottom-[-100px] right-[-100px] w-96 h-96 bg-brand-glow opacity-20 blur-[100px] rounded-full pointer-events-none"></div>
+
+    <div class="relative w-full max-w-7xl h-full max-h-[900px] flex flex-col lg:flex-row gap-6 glassmorphism rounded-3xl p-6 shadow-panel border border-white/5 z-10">
+        
+        <!-- SIDEBAR: Controls -->
+        <aside class="w-full lg:w-80 flex flex-col gap-6 shrink-0 z-20 overflow-y-auto pr-2 custom-scrollbar">
+            
+            <header>
+                <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-accent to-brand-glow tracking-tight pb-1">
+                    Numerical Methods
+                </h1>
+                <p class="text-sm border-t border-white/10 mt-2 pt-2 text-gray-400 font-medium">Interactive Visualization</p>
+            </header>
+
+            <form id="calc-form" class="flex flex-col gap-5">
+                
+                <!-- Task Selection -->
+                <div class="control-group">
+                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Task</label>
+                    <div class="relative">
+                        <select id="task-select" class="w-full bg-brand-surface border border-white/10 rounded-xl px-4 py-3 text-gray-200 appearance-none focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all cursor-pointer">
+                            <option value="task4">Задание 4: Корни нелинейных уравнений</option>
+                            <option value="task1" disabled>Задание 1: СЛАУ (Скоро)</option>
+                            <option value="task2" disabled>Задание 2: ОДУ (Скоро)</option>
+                            <option value="task5" disabled>Задание 5: Интерполяция (Скоро)</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-brand-accent">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Method Selection -->
+                <div class="control-group">
+                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Method</label>
+                    <div class="relative">
+                        <select id="method-select" class="w-full bg-brand-surface border border-white/10 rounded-xl px-4 py-3 text-gray-200 appearance-none focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all cursor-pointer">
+                            <option value="bisection">Б) Дихотомии (Половинного деления)</option>
+                            <option value="newton">В) Ньютона (Касательных)</option>
+                            <option value="simple_iter">А) Простой итерации</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-brand-accent">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Function Input -->
+                <div class="control-group">
+                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Mathematical Formula (f(x))</label>
+                    <input type="text" id="formula-input" value="x^3 - 2*x - 5" 
+                           class="w-full bg-brand-surface border border-white/10 rounded-xl px-4 py-3 text-gray-200 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all placeholder-gray-500" 
+                           placeholder="e.g. x^2 - 4">
+                </div>
+
+                <!-- Range inputs (a, b) -->
+                <div class="control-group" id="range-group">
+                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Search Interval [a, b]</label>
+                    <div class="flex gap-4">
+                        <div class="flex-1">
+                            <div class="flex items-center bg-brand-surface border border-white/10 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-brand-accent transition-all">
+                                <span class="pl-4 pr-3 py-3 text-gray-500 font-mono text-sm border-r border-white/10">a</span>
+                                <input type="number" id="input-a" value="2" step="0.5" 
+                                       class="w-full bg-transparent px-3 py-3 text-gray-200 font-mono text-sm focus:outline-none">
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center bg-brand-surface border border-white/10 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-brand-accent transition-all">
+                                <span class="pl-4 pr-3 py-3 text-gray-500 font-mono text-sm border-r border-white/10">b</span>
+                                <input type="number" id="input-b" value="3" step="0.5" 
+                                       class="w-full bg-transparent px-3 py-3 text-gray-200 font-mono text-sm focus:outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Initial Guess input (for Newton) -->
+                <div class="control-group hidden" id="initial-guess-group">
+                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Initial Guess (x0)</label>
+                    <div class="flex items-center bg-brand-surface border border-white/10 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-brand-accent transition-all">
+                        <span class="pl-4 pr-3 py-3 text-gray-500 font-mono text-sm border-r border-white/10">x0</span>
+                        <input type="number" id="input-x0" value="2.5" step="0.5" 
+                               class="w-full bg-transparent px-3 py-3 text-gray-200 font-mono text-sm focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- Precision Slider -->
+                <div class="control-group mt-2">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Precision (ε)</label>
+                        <span id="precision-value" class="text-brand-accent font-mono text-xs font-medium">1e-3</span>
+                    </div>
+                    
+                    <input type="range" id="precision-slider" min="1" max="6" value="3" step="1" 
+                           class="w-full h-2 bg-brand-surface rounded-lg appearance-none cursor-pointer accent-brand-accent relative z-10">
+                    <div class="flex justify-between text-[10px] text-gray-600 font-mono mt-1 px-1">
+                        <span>1e-1</span>
+                        <span>1e-6</span>
+                    </div>
+                </div>
+                
+                <button type="button" id="btn-calculate" class="mt-4 w-full relative group overflow-hidden rounded-xl p-[1px]">
+                    <span class="absolute inset-0 bg-gradient-to-r from-brand-accent to-brand-glow opacity-70 group-hover:opacity-100 transition-opacity duration-300 rounded-xl blur-sm"></span>
+                    <span class="absolute inset-0 bg-gradient-to-r from-brand-accent to-brand-glow rounded-xl"></span>
+                    <div class="relative bg-brand-surface py-3 px-4 rounded-xl flex items-center justify-center gap-2 group-hover:bg-opacity-0 transition-all duration-300">
+                        <span class="font-bold tracking-wide text-white">CALCULATE</span>
+                    </div>
+                </button>
+
+            </form>
+            
+            <!-- Information / Results Box -->
+            <div id="results-box" class="mt-auto bg-[#0a0f19]/80 rounded-xl p-4 border border-white/5 hidden">
+                 <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Result</h3>
+                 <div class="flex flex-col gap-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500">Root X ≈</span>
+                        <span id="res-root" class="font-mono text-brand-accent font-bold">...</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500">Iterations:</span>
+                        <span id="res-iters" class="font-mono text-gray-300">...</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500">Final Error:</span>
+                        <span id="res-error" class="font-mono text-gray-400 text-xs">...</span>
+                    </div>
+                 </div>
+            </div>
+
+        </aside>
+
+        <!-- MAIN AREA: Graph & Player -->
+        <main class="flex-1 flex flex-col min-w-0 bg-[#0a0f19]/50 rounded-2xl border border-white/5 overflow-hidden relative">
+            
+            <!-- Graph Container -->
+            <div id="plot" class="flex-1 w-full h-full relative z-10"></div>
+            
+            <!-- Loader overlay -->
+            <div id="plot-loader" class="absolute inset-0 z-20 flex items-center justify-center bg-brand-base/80 backdrop-blur-sm hidden">
+                <div class="w-12 h-12 border-4 border-brand-accent/20 border-t-brand-accent rounded-full animate-spin shadow-neon"></div>
+            </div>
+
+            <!-- Player Controls -->
+            <div class="h-20 border-t border-white/5 bg-brand-surface/50 backdrop-blur-md flex items-center justify-between px-6 z-20 shrink-0">
+                 
+                 <div class="flex items-center gap-4">
+                     <span class="text-xs font-semibold text-gray-400 uppercase tracking-widest hidden md:block">Step</span>
+                     <div class="flex items-center gap-3">
+                         <span id="current-step" class="font-mono text-brand-accent text-lg font-bold">0</span>
+                         <span class="text-gray-500 font-mono">/</span>
+                         <span id="total-steps" class="font-mono text-gray-500">0</span>
+                     </div>
+                 </div>
+                 
+                 <div class="flex items-center gap-4">
+                     <button id="btn-prev" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-gray-300 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                     </button>
+                     
+                     <button id="btn-play-pause" class="w-14 h-14 flex items-center justify-center rounded-full bg-brand-accent/20 hover:bg-brand-accent/30 text-brand-accent transition-all shadow-neon disabled:opacity-30 disabled:cursor-not-allowed">
+                        <svg id="icon-play" class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"></path></svg>
+                        <svg id="icon-pause" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                     </button>
+                     
+                     <button id="btn-next" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-gray-300 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                     </button>
+                 </div>
+                 
+                 <div class="w-24 hidden md:flex justify-end">
+                     <!-- Space for something like "Speed" or just empty -->
+                 </div>
+            </div>
+            
+        </main>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
