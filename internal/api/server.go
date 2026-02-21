@@ -61,11 +61,10 @@ func registerRoutes() *chi.Mux {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	r.Get("/", handlers.Index)
-
-	// Раздача статических файлов (CSS, JS)
 	fs := http.FileServer(http.Dir("static"))
 	r.Handle("/static/*", http.StripPrefix("/static/", fs))
+
+	r.Get("/", handlers.Index)
 
 	r.Route("/api/v1/calculate", func(r chi.Router) {
 		r.Route("/task4", func(r chi.Router) {
