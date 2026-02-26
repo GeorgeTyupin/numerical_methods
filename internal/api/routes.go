@@ -25,7 +25,7 @@ func RegisterRoutes(logger *slog.Logger) *chi.Mux {
 		task4 := handlers.NewTask4Handler(logger)
 
 		r.Route("/task4", func(r chi.Router) {
-			r.Post("/bisection", task4.Bisection)
+			r.Post("/dichotomy", task4.Dichotomy)
 			r.Post("/newton", task4.Newton)
 			r.Post("/simple_iter", task4.SimpleIter)
 		})

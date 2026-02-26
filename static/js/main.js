@@ -112,7 +112,7 @@ btnCalculate.addEventListener('click', async () => {
 
     const payload = { formula, epsilon };
 
-    if (method === 'bisection') {
+    if (method === 'dichotomy') {
         let a = parseFloat(inputA.value.replace(',', '.'));
         let b = parseFloat(inputB.value.replace(',', '.'));
         if (isNaN(a) || isNaN(b)) {

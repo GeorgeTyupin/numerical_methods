@@ -38,11 +38,11 @@ func (e *Task4Engine) NewtonMethod(funcStr string, x0, epsilon float64) ([]math.
 
 }
 
-func (e *Task4Engine) BisectionMethod(funcStr string, a, b, epsilon float64) ([]math.BisectionStep, float64, int, error) {
-	const op = "bisection"
+func (e *Task4Engine) DichotomyMethod(funcStr string, a, b, epsilon float64) ([]math.DichotomyStep, float64, int, error) {
+	const op = "dichotomy"
 	logger := e.logger.With(slog.String("op", op))
 
-	calculator, err := math.NewBisectionMethodCalculator(funcStr, a, b, epsilon)
+	calculator, err := math.NewDichotomyMethodCalculator(funcStr, a, b, epsilon)
 	if err != nil {
 		logger.Error("failed to create calculator", slog.Any("error", err))
 		return nil, 0, 0, err

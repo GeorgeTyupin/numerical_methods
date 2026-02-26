@@ -58,15 +58,15 @@ func (h *Task4Handler) Newton(w http.ResponseWriter, r *http.Request) {
 	handutils.RespondWithJSON(w, http.StatusOK, resp)
 }
 
-func (h *Task4Handler) Bisection(w http.ResponseWriter, r *http.Request) {
-	var req dto.BisectionRequest
+func (h *Task4Handler) Dichotomy(w http.ResponseWriter, r *http.Request) {
+	var req dto.DichotomyRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		handutils.RespondWithError(w, http.StatusBadRequest, errs.ErrInvalidJSON.Error())
 		return
 	}
 
-	steps, res, iter, err := h.engine.BisectionMethod(
+	steps, res, iter, err := h.engine.DichotomyMethod(
 		req.Formula,
 		req.A,
 		req.B,
@@ -77,8 +77,8 @@ func (h *Task4Handler) Bisection(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp := dto.BisectionResponse{
-		Steps: dto.BisectionStepMapping(steps),
+	resp := dto.DichotomyResponse{
+		Steps: dto.DichotomyStepMapping(steps),
 		BaseResponse: dto.BaseResponse{
 			Root:       res,
 			Iterations: iter,

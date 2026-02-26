@@ -8,12 +8,12 @@ import (
 	"github.com/Knetic/govaluate"
 )
 
-type BisectionStep struct {
+type DichotomyStep struct {
 	A float64
 	B float64
 }
 
-type BisectionMethodCalculator struct {
+type DichotomyMethodCalculator struct {
 	Func    *govaluate.EvaluableExpression
 	A       float64
 	B       float64
@@ -21,13 +21,13 @@ type BisectionMethodCalculator struct {
 	MaxIter int
 }
 
-func NewBisectionMethodCalculator(funcStr string, a, b, epsilon float64) (*BisectionMethodCalculator, error) {
+func NewDichotomyMethodCalculator(funcStr string, a, b, epsilon float64) (*DichotomyMethodCalculator, error) {
 	fn, err := mathutils.ParseFormula(funcStr)
 	if err != nil {
 		return nil, err
 	}
 
-	return &BisectionMethodCalculator{
+	return &DichotomyMethodCalculator{
 		Func:    fn,
 		A:       a,
 		B:       b,
@@ -37,7 +37,7 @@ func NewBisectionMethodCalculator(funcStr string, a, b, epsilon float64) (*Bisec
 }
 
 // eval вычисляет значение функции в точке x
-func (c *BisectionMethodCalculator) eval(x float64) float64 {
+func (c *DichotomyMethodCalculator) eval(x float64) float64 {
 	res, _ := c.Func.Evaluate(map[string]interface{}{"x": x, "pi": math.Pi, "e": math.E})
 	val, ok := res.(float64)
 	if !ok {
@@ -46,8 +46,8 @@ func (c *BisectionMethodCalculator) eval(x float64) float64 {
 	return val
 }
 
-func (c *BisectionMethodCalculator) Calculate() ([]BisectionStep, float64, int, error) {
-	var steps []BisectionStep
+func (c *DichotomyMethodCalculator) Calculate() ([]DichotomyStep, float64, int, error) {
+	var steps []DichotomyStep
 	a := c.A
 	b := c.B
 
@@ -78,7 +78,7 @@ func (c *BisectionMethodCalculator) Calculate() ([]BisectionStep, float64, int, 
 		}
 
 		// Записываем шаг для фронтенда
-		steps = append(steps, BisectionStep{A: a, B: b})
+		steps = append(steps, DichotomyStep{A: a, B: b})
 
 		// Проверка на точность или точное попадание в корень
 		if math.Abs(b-a) < c.Epsilon || fmid == 0 {

@@ -16,35 +16,35 @@ type BaseResponse struct {
 }
 
 // ============================================
-// Метод Дихотомии (Bisection)
+// Метод Дихотомии (Dichotomy)
 // ============================================
 
-type BisectionRequest struct {
+type DichotomyRequest struct {
 	BaseRequest
 	A float64 `json:"a"` // Левая граница
 	B float64 `json:"b"` // Правая граница
 }
 
-type BisectionStep struct {
+type DichotomyStep struct {
 	A float64 `json:"a"` // Левая граница отрезка на текущем шаге
 	B float64 `json:"b"` // Правая граница отрезка на текущем шаге
 	C float64 `json:"c"` // Середина отрезка на текущем шаге
 }
 
-type BisectionResponse struct {
+type DichotomyResponse struct {
 	BaseResponse
-	Steps []BisectionStep `json:"steps"`
+	Steps []DichotomyStep `json:"steps"`
 }
 
-func BisectionStepMapping(steps []math.BisectionStep) []BisectionStep {
-	bisectionSteps := make([]BisectionStep, len(steps))
+func DichotomyStepMapping(steps []math.DichotomyStep) []DichotomyStep {
+	dichotomySteps := make([]DichotomyStep, len(steps))
 	for i, step := range steps {
-		bisectionSteps[i] = BisectionStep{
+		dichotomySteps[i] = DichotomyStep{
 			A: step.A,
 			B: step.B,
 		}
 	}
-	return bisectionSteps
+	return dichotomySteps
 }
 
 // ============================================

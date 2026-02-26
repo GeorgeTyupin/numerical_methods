@@ -96,7 +96,7 @@ export function drawStep(index, steps, method, expr) {
     const stepData = steps[index];
     let stepTraces = [];
     
-    if (method === 'bisection') {
+    if (method === 'dichotomy') {
         const a = stepData.a !== undefined ? stepData.a : stepData.A;
         const b = stepData.b !== undefined ? stepData.b : stepData.B;
         const c = stepData.c !== undefined ? stepData.c : stepData.C;
