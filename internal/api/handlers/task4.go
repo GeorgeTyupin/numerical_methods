@@ -66,7 +66,26 @@ func (h *Task4Handler) Bisection(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	steps, res, iter, err := h.engine.BisectionMethod(
+		req.Formula,
+		req.A,
+		req.B,
+		req.Epsilon,
+	)
+	if err != nil {
+		handutils.RespondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := dto.BisectionResponse{
+		Steps: dto.BisectionStepMapping(steps),
+		BaseResponse: dto.BaseResponse{
+			Root:       res,
+			Iterations: iter,
+		},
+	}
+
+	handutils.RespondWithJSON(w, http.StatusOK, resp)
 }
 
 func (h *Task4Handler) SimpleIter(w http.ResponseWriter, r *http.Request) {

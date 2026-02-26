@@ -36,6 +36,17 @@ type BisectionResponse struct {
 	Steps []BisectionStep `json:"steps"`
 }
 
+func BisectionStepMapping(steps []math.BisectionStep) []BisectionStep {
+	bisectionSteps := make([]BisectionStep, len(steps))
+	for i, step := range steps {
+		bisectionSteps[i] = BisectionStep{
+			A: step.A,
+			B: step.B,
+		}
+	}
+	return bisectionSteps
+}
+
 // ============================================
 // Метод Ньютона (Newton)
 // ============================================
