@@ -18,7 +18,6 @@ type DichotomyMethodCalculator struct {
 	A       float64
 	B       float64
 	Epsilon float64
-	MaxIter int
 }
 
 func NewDichotomyMethodCalculator(funcStr string, a, b, epsilon float64) (*DichotomyMethodCalculator, error) {
@@ -32,7 +31,6 @@ func NewDichotomyMethodCalculator(funcStr string, a, b, epsilon float64) (*Dicho
 		A:       a,
 		B:       b,
 		Epsilon: epsilon,
-		MaxIter: maxIter,
 	}, nil
 }
 
@@ -68,7 +66,7 @@ func (c *DichotomyMethodCalculator) Calculate() ([]DichotomyStep, float64, int, 
 	}
 
 	// Цикл для вычисления корня
-	for i := 1; i <= c.MaxIter; i++ {
+	for i := 1; i <= maxIter; i++ {
 		// Вычисляем середину отрезка
 		mid := (a + b) / 2.0
 		fmid := c.eval(mid)
@@ -96,5 +94,5 @@ func (c *DichotomyMethodCalculator) Calculate() ([]DichotomyStep, float64, int, 
 		}
 	}
 
-	return steps, 0, c.MaxIter, fmt.Errorf("превышено максимальное количество итераций")
+	return steps, 0, maxIter, fmt.Errorf("превышено максимальное количество итераций")
 }

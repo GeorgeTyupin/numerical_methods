@@ -95,6 +95,18 @@ type SimpleIterStep struct {
 	Fx    float64 `json:"fx"`     // Значение функции (можно передавать, если нужно для построения на графике, или опустить)
 }
 
+func SimpleIterStepMapping(steps []math.SimpleIterStep) []SimpleIterStep {
+	simpleIterSteps := make([]SimpleIterStep, len(steps))
+	for i, step := range steps {
+		simpleIterSteps[i] = SimpleIterStep{
+			XPrev: step.XPrev,
+			XNew:  step.XNew,
+			Fx:    step.Fx,
+		}
+	}
+	return simpleIterSteps
+}
+
 type SimpleIterResponse struct {
 	BaseResponse
 	Steps []SimpleIterStep `json:"steps"`

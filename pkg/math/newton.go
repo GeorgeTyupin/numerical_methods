@@ -9,11 +9,6 @@ import (
 	"gonum.org/v1/gonum/diff/fd"
 )
 
-// Максимальное количество итераций
-// Зашиваем жесткий предел, чтобы защитить сервер от зависания
-// на нерешаемых уравнениях.
-const maxIter = 10000
-
 type NewtonStep struct {
 	XPrev float64
 	XNew  float64

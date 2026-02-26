@@ -96,5 +96,23 @@ func (h *Task4Handler) SimpleIter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	steps, res, iter, err := h.engine.SimpleIterationMethod(
+		req.Formula,
+		req.X0,
+		req.Epsilon,
+	)
+	if err != nil {
+		handutils.RespondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := dto.SimpleIterResponse{
+		Steps: dto.SimpleIterStepMapping(steps),
+		BaseResponse: dto.BaseResponse{
+			Root:       res,
+			Iterations: iter,
+		},
+	}
+
+	handutils.RespondWithJSON(w, http.StatusOK, resp)
 }
