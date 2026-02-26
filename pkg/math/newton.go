@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 
+	"github.com/GeorgeTyupin/numerical_methods/pkg/math/mathutils"
 	"github.com/Knetic/govaluate"
 	"gonum.org/v1/gonum/diff/fd"
 )
@@ -38,7 +39,7 @@ type NewtonMethodCalculator struct {
 // x0 - начальное приближение
 // epsilon - требуемая точность
 func NewNewtonMethodCalculator(reqFunc string, x0 float64, epsilon float64) (*NewtonMethodCalculator, error) {
-	fn, err := ParseFormula(reqFunc)
+	fn, err := mathutils.ParseFormula(reqFunc)
 	if err != nil {
 		return nil, err
 	}
