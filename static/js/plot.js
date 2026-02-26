@@ -20,14 +20,31 @@ const layoutTemplate = {
         zerolinewidth: 2,
     },
     showlegend: false,
-    hovermode: 'closest'
+    hovermode: 'closest',
+    dragmode: 'pan'
 };
 
 export function initPlot() {
     Plotly.newPlot('plot', [{
         x: [], y: [], type: 'scatter', mode: 'lines',
         line: { color: '#00f0ff', width: 3, shape: 'spline' }
-    }], layoutTemplate, { responsive: true, displayModeBar: false });
+    }], layoutTemplate, { responsive: true, displayModeBar: false, scrollZoom: true });
+
+    // Слушаем события зума от пользователя, чтобы при включении новых шагов
+    // график оставался в пределах выбранного зума.
+    document.getElementById('plot').on('plotly_relayout', (e) => {
+        if (e['xaxis.range[0]'] !== undefined) {
+            currentXRange = [e['xaxis.range[0]'], e['xaxis.range[1]']];
+            currentYRange = [e['yaxis.range[0]'], e['yaxis.range[1]']];
+        } else if (e['xaxis.autorange']) {
+            // Если двойной клик (сброс)
+            const graphDiv = document.getElementById('plot');
+            if (graphDiv.layout.xaxis && graphDiv.layout.xaxis.range) {
+                currentXRange = graphDiv.layout.xaxis.range;
+                currentYRange = graphDiv.layout.yaxis.range;
+            }
+        }
+    });
 }
 
 export function drawBaseGraph(expr, center, span = 10) {

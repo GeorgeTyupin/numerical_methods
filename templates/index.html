@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Numerical Methods Visualization</title>
+    <title>Визуализация численных методов</title>
     <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Plotly.js (CDN) -->
@@ -52,16 +52,16 @@
             
             <header>
                 <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-accent to-brand-glow tracking-tight pb-1">
-                    Numerical Methods
+                    Численные Методы
                 </h1>
-                <p class="text-sm border-t border-white/10 mt-2 pt-2 text-gray-400 font-medium">Interactive Visualization</p>
+                <p class="text-sm border-t border-white/10 mt-2 pt-2 text-gray-400 font-medium">Интерактивная визуализация</p>
             </header>
 
             <form id="calc-form" class="flex flex-col gap-5">
                 
                 <!-- Task Selection -->
                 <div class="control-group">
-                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Task</label>
+                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Задание</label>
                     <div class="relative">
                         <select id="task-select" class="w-full bg-brand-surface border border-white/10 rounded-xl px-4 py-3 text-gray-200 appearance-none focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all cursor-pointer">
                             <option value="task4">Задание 4: Корни нелинейных уравнений</option>
@@ -79,7 +79,7 @@
 
                 <!-- Method Selection -->
                 <div class="control-group">
-                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Method</label>
+                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Метод</label>
                     <div class="relative">
                         <select id="method-select" class="w-full bg-brand-surface border border-white/10 rounded-xl px-4 py-3 text-gray-200 appearance-none focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all cursor-pointer">
                             <option value="bisection">Б) Дихотомии (Половинного деления)</option>
@@ -96,15 +96,15 @@
 
                 <!-- Function Input -->
                 <div class="control-group">
-                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Mathematical Formula (f(x))</label>
+                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Математическая формула (f(x))</label>
                     <input type="text" id="formula-input" value="x^3 - 2*x - 5" 
                            class="w-full bg-brand-surface border border-white/10 rounded-xl px-4 py-3 text-gray-200 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all placeholder-gray-500" 
-                           placeholder="e.g. x^2 - 4">
+                           placeholder="Например: x^2 - 4">
                 </div>
 
                 <!-- Range inputs (a, b) -->
                 <div class="control-group" id="range-group">
-                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Search Interval [a, b]</label>
+                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Интервал поиска [a, b]</label>
                     <div class="flex gap-4">
                         <div class="flex-1">
                             <div class="flex items-center bg-brand-surface border border-white/10 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-brand-accent transition-all">
@@ -125,7 +125,7 @@
                 
                 <!-- Initial Guess input (for Newton) -->
                 <div class="control-group hidden" id="initial-guess-group">
-                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Initial Guess (x0)</label>
+                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Начальное приближение (x0)</label>
                     <div class="flex items-center bg-brand-surface border border-white/10 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-brand-accent transition-all">
                         <span class="pl-4 pr-3 py-3 text-gray-500 font-mono text-sm border-r border-white/10">x0</span>
                         <input type="number" id="input-x0" value="2.5" step="0.5" 
@@ -136,7 +136,7 @@
                 <!-- Precision Slider -->
                 <div class="control-group mt-2">
                     <div class="flex justify-between items-center mb-2">
-                        <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Precision (ε)</label>
+                        <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Точность (ε)</label>
                         <span id="precision-value" class="text-brand-accent font-mono text-xs font-medium">1e-3</span>
                     </div>
                     
@@ -152,7 +152,7 @@
                     <span class="absolute inset-0 bg-gradient-to-r from-brand-accent to-brand-glow opacity-70 group-hover:opacity-100 transition-opacity duration-300 rounded-xl blur-sm"></span>
                     <span class="absolute inset-0 bg-gradient-to-r from-brand-accent to-brand-glow rounded-xl"></span>
                     <div class="relative bg-brand-surface py-3 px-4 rounded-xl flex items-center justify-center gap-2 group-hover:bg-opacity-0 transition-all duration-300">
-                        <span class="font-bold tracking-wide text-white">CALCULATE</span>
+                        <span class="font-bold tracking-wide text-white">ВЫЧИСЛИТЬ</span>
                     </div>
                 </button>
 
@@ -160,18 +160,18 @@
             
             <!-- Information / Results Box -->
             <div id="results-box" class="mt-auto bg-[#0a0f19]/80 rounded-xl p-4 border border-white/5 hidden">
-                 <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Result</h3>
+                 <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Результат</h3>
                  <div class="flex flex-col gap-2">
                     <div class="flex justify-between items-center">
-                        <span class="text-sm text-gray-500">Root X ≈</span>
+                        <span class="text-sm text-gray-500">Корень X ≈</span>
                         <span id="res-root" class="font-mono text-brand-accent font-bold">...</span>
                     </div>
                     <div class="flex justify-between items-center">
-                        <span class="text-sm text-gray-500">Iterations:</span>
+                        <span class="text-sm text-gray-500">Итераций:</span>
                         <span id="res-iters" class="font-mono text-gray-300">...</span>
                     </div>
                     <div class="flex justify-between items-center">
-                        <span class="text-sm text-gray-500">Final Error:</span>
+                        <span class="text-sm text-gray-500">Погрешность:</span>
                         <span id="res-error" class="font-mono text-gray-400 text-xs">...</span>
                     </div>
                  </div>
@@ -194,7 +194,7 @@
             <div class="h-20 border-t border-white/5 bg-brand-surface/50 backdrop-blur-md flex items-center justify-between px-6 z-20 shrink-0">
                  
                  <div class="flex items-center gap-4">
-                     <span class="text-xs font-semibold text-gray-400 uppercase tracking-widest hidden md:block">Step</span>
+                     <span class="text-xs font-semibold text-gray-400 uppercase tracking-widest hidden md:block">Шаг</span>
                      <div class="flex items-center gap-3">
                          <span id="current-step" class="font-mono text-brand-accent text-lg font-bold">0</span>
                          <span class="text-gray-500 font-mono">/</span>
