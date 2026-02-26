@@ -1,5 +1,7 @@
 package dto
 
+import "github.com/GeorgeTyupin/numerical_methods/pkg/math"
+
 // BaseRequest содержит общие поля для всех методов поиска корней
 type BaseRequest struct {
 	Formula string  `json:"formula"` // Функция, например "x^3 - 2*x - 5"
@@ -47,6 +49,19 @@ type NewtonStep struct {
 	XPrev float64 `json:"x_prev"` // Текущий x_n
 	XNew  float64 `json:"x_new"`  // Вычисленный x_n+1
 	Fx    float64 `json:"fx"`     // Значение f(x_prev)
+}
+
+// NewtonStepMapping конвертирует []math.NewtonStep в []NewtonStep
+func NewtonStepMapping(steps []math.NewtonStep) []NewtonStep {
+	newtonSteps := make([]NewtonStep, len(steps))
+	for i, step := range steps {
+		newtonSteps[i] = NewtonStep{
+			XPrev: step.XPrev,
+			XNew:  step.XNew,
+			Fx:    step.Fx,
+		}
+	}
+	return newtonSteps
 }
 
 type NewtonResponse struct {

@@ -18,7 +18,7 @@ type HttpServer struct {
 func NewHttpServer(logger *slog.Logger, cfg *config.Config) *HttpServer {
 	logger = logger.With(slog.String("component", component))
 
-	mux := RegisterRoutes()
+	mux := RegisterRoutes(logger)
 
 	server := &http.Server{
 		Addr:    cfg.Server.Port,
