@@ -1,0 +1,10 @@
+.git
+.agents
+.gemini
+bin
+tmp
+Dockerfile
+docker-compose.yml
+README.md
+go.sum
+vendor
