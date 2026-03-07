@@ -1,10 +1,15 @@
+# Системные и временные файлы
 .git
 .agents
 .gemini
 bin
 tmp
+
+# Файлы Docker (не обязательны внутри контейнера)
 Dockerfile
 docker-compose.yml
+.dockerignore
+
+# Документация и зависимости
 README.md
-go.sum
-vendor
+vendor/
