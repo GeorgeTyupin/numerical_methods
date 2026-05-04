@@ -10,6 +10,7 @@ type JacobiStep struct {
 	P      int
 	Q      int
 	Norm   float64
+	Phase  string // "rotation" | "extract"
 }
 
 type JacobiCalculator struct {
@@ -83,7 +84,14 @@ func (c *JacobiCalculator) Calculate() ([]JacobiStep, []float64, [][]float64, in
 	for iter := 1; iter <= maxIter; iter++ {
 		norm := offDiagNorm(m)
 		if norm < c.Epsilon {
-			// Собственные значения — диагональные элементы
+			// Финальный шаг: извлечение собственных значений с диагонали
+			steps = append(steps, JacobiStep{
+				Matrix: copyMatrix(m),
+				P:      -1,
+				Q:      -1,
+				Norm:   norm,
+				Phase:  "extract",
+			})
 			eigenvalues := make([]float64, n)
 			for i := 0; i < n; i++ {
 				eigenvalues[i] = m[i][i]
@@ -132,12 +140,20 @@ func (c *JacobiCalculator) Calculate() ([]JacobiStep, []float64, [][]float64, in
 			P:      p,
 			Q:      q,
 			Norm:   norm,
+			Phase:  "rotation",
 		})
 
 		m = newM
 		eigVecs = newEigVecs
 	}
 
+	steps = append(steps, JacobiStep{
+		Matrix: copyMatrix(m),
+		P:      -1,
+		Q:      -1,
+		Norm:   offDiagNorm(m),
+		Phase:  "extract",
+	})
 	eigenvalues := make([]float64, n)
 	for i := 0; i < n; i++ {
 		eigenvalues[i] = m[i][i]

@@ -6,8 +6,9 @@ import (
 )
 
 type SeidelStep struct {
-	X    []float64
-	Norm float64
+	X     []float64
+	Norm  float64
+	Phase string // "iterate" | "solution"
 }
 
 type SeidelCalculator struct {
@@ -80,8 +81,9 @@ func (c *SeidelCalculator) Calculate() ([]SeidelStep, []float64, int, error) {
 		}
 
 		steps = append(steps, SeidelStep{
-			X:    copyVector(x),
-			Norm: norm,
+			X:     copyVector(x),
+			Norm:  norm,
+			Phase: "iterate",
 		})
 
 		if norm < c.Epsilon {

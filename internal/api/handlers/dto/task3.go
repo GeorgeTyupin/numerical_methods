@@ -12,6 +12,7 @@ type JacobiStepDTO struct {
 	P      int         `json:"p"`
 	Q      int         `json:"q"`
 	Norm   float64     `json:"norm"`
+	Phase  string      `json:"phase"`
 }
 
 type JacobiResponse struct {
@@ -24,7 +25,7 @@ type JacobiResponse struct {
 func JacobiStepMapping(steps []gomath.JacobiStep) []JacobiStepDTO {
 	out := make([]JacobiStepDTO, len(steps))
 	for i, s := range steps {
-		out[i] = JacobiStepDTO{Matrix: s.Matrix, P: s.P, Q: s.Q, Norm: s.Norm}
+		out[i] = JacobiStepDTO{Matrix: s.Matrix, P: s.P, Q: s.Q, Norm: s.Norm, Phase: s.Phase}
 	}
 	return out
 }

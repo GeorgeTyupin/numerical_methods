@@ -5,11 +5,13 @@ import (
 	"math"
 )
 
-// TridiagonalStep — состояние коэффициентов прогонки на каждом шаге прямого хода
+// TridiagonalStep — состояние коэффициентов прогонки на каждом шаге
 type TridiagonalStep struct {
 	Alpha []float64
 	Beta  []float64
 	Index int
+	Phase string    // "forward" | "backward"
+	X     []float64 // частичное решение (только для backward)
 }
 
 // TridiagonalCalculator решает трёхдиагональную СЛАУ методом прогонки (алгоритм Томаса).
@@ -57,6 +59,7 @@ func (c *TridiagonalCalculator) Calculate() ([]TridiagonalStep, []float64, error
 		Alpha: append([]float64{}, alpha...),
 		Beta:  append([]float64{}, beta...),
 		Index: 0,
+		Phase: "forward",
 	})
 
 	for i := 1; i < n; i++ {
@@ -71,14 +74,30 @@ func (c *TridiagonalCalculator) Calculate() ([]TridiagonalStep, []float64, error
 			Alpha: append([]float64{}, alpha...),
 			Beta:  append([]float64{}, beta...),
 			Index: i,
+			Phase: "forward",
 		})
 	}
 
-	// Обратный ход
+	// Обратный ход с записью шагов
 	x := make([]float64, n)
 	x[n-1] = beta[n-1]
+	steps = append(steps, TridiagonalStep{
+		Alpha: append([]float64{}, alpha...),
+		Beta:  append([]float64{}, beta...),
+		Index: n - 1,
+		Phase: "backward",
+		X:     copyVector(x),
+	})
+
 	for i := n - 2; i >= 0; i-- {
 		x[i] = alpha[i]*x[i+1] + beta[i]
+		steps = append(steps, TridiagonalStep{
+			Alpha: append([]float64{}, alpha...),
+			Beta:  append([]float64{}, beta...),
+			Index: i,
+			Phase: "backward",
+			X:     copyVector(x),
+		})
 	}
 
 	return steps, x, nil

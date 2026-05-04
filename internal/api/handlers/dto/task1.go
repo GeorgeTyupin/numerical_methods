@@ -11,6 +11,8 @@ type GaussStepDTO struct {
 	Matrix [][]float64 `json:"matrix"`
 	Vector []float64   `json:"vector"`
 	Pivot  int         `json:"pivot"`
+	Phase  string      `json:"phase"`
+	X      []float64   `json:"x,omitempty"`
 }
 
 type GaussResponse struct {
@@ -21,7 +23,7 @@ type GaussResponse struct {
 func GaussStepMapping(steps []gomath.GaussStep) []GaussStepDTO {
 	out := make([]GaussStepDTO, len(steps))
 	for i, s := range steps {
-		out[i] = GaussStepDTO{Matrix: s.Matrix, Vector: s.Vector, Pivot: s.Pivot}
+		out[i] = GaussStepDTO{Matrix: s.Matrix, Vector: s.Vector, Pivot: s.Pivot, Phase: s.Phase, X: s.X}
 	}
 	return out
 }
@@ -33,8 +35,9 @@ type SimpleIterSLAURequest struct {
 }
 
 type SimpleIterSLAUStepDTO struct {
-	X    []float64 `json:"x"`
-	Norm float64   `json:"norm"`
+	X     []float64 `json:"x"`
+	Norm  float64   `json:"norm"`
+	Phase string    `json:"phase"`
 }
 
 type SimpleIterSLAUResponse struct {
@@ -46,7 +49,7 @@ type SimpleIterSLAUResponse struct {
 func SimpleIterSLAUStepMapping(steps []gomath.SimpleIterSLAUStep) []SimpleIterSLAUStepDTO {
 	out := make([]SimpleIterSLAUStepDTO, len(steps))
 	for i, s := range steps {
-		out[i] = SimpleIterSLAUStepDTO{X: s.X, Norm: s.Norm}
+		out[i] = SimpleIterSLAUStepDTO{X: s.X, Norm: s.Norm, Phase: s.Phase}
 	}
 	return out
 }

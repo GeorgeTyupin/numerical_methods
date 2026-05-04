@@ -6,8 +6,9 @@ import (
 )
 
 type SimpleIterSLAUStep struct {
-	X    []float64
-	Norm float64
+	X     []float64
+	Norm  float64
+	Phase string // "iterate" | "solution"
 }
 
 type SimpleIterSLAUCalculator struct {
@@ -80,8 +81,9 @@ func (c *SimpleIterSLAUCalculator) Calculate() ([]SimpleIterSLAUStep, []float64,
 		}
 
 		steps = append(steps, SimpleIterSLAUStep{
-			X:    copyVector(xNew),
-			Norm: norm,
+			X:     copyVector(xNew),
+			Norm:  norm,
+			Phase: "iterate",
 		})
 
 		x = xNew

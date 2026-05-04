@@ -9,6 +9,8 @@ type GaussStep struct {
 	Matrix [][]float64
 	Vector []float64
 	Pivot  int
+	Phase  string    // "forward" | "backward"
+	X      []float64 // частичное решение (только для backward)
 }
 
 type GaussCalculator struct {
@@ -89,6 +91,7 @@ func (c *GaussCalculator) Calculate() ([]GaussStep, []float64, error) {
 			Matrix: copyMatrix(m),
 			Vector: copyVector(b),
 			Pivot:  col,
+			Phase:  "forward",
 		})
 
 		// Исключение
@@ -101,7 +104,7 @@ func (c *GaussCalculator) Calculate() ([]GaussStep, []float64, error) {
 		}
 	}
 
-	// Обратная подстановка
+	// Обратная подстановка с записью шагов
 	x := make([]float64, n)
 	for i := n - 1; i >= 0; i-- {
 		sum := b[i]
@@ -112,6 +115,13 @@ func (c *GaussCalculator) Calculate() ([]GaussStep, []float64, error) {
 			return nil, nil, fmt.Errorf("деление на ноль при обратной подстановке")
 		}
 		x[i] = sum / m[i][i]
+		steps = append(steps, GaussStep{
+			Matrix: copyMatrix(m),
+			Vector: copyVector(b),
+			Pivot:  i,
+			Phase:  "backward",
+			X:      copyVector(x),
+		})
 	}
 
 	return steps, x, nil

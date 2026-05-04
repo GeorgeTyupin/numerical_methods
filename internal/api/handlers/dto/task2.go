@@ -13,6 +13,8 @@ type TridiagonalStepDTO struct {
 	Alpha []float64 `json:"alpha"`
 	Beta  []float64 `json:"beta"`
 	Index int       `json:"index"`
+	Phase string    `json:"phase"`
+	X     []float64 `json:"x,omitempty"`
 }
 
 type TridiagonalResponse struct {
@@ -23,7 +25,7 @@ type TridiagonalResponse struct {
 func TridiagonalStepMapping(steps []gomath.TridiagonalStep) []TridiagonalStepDTO {
 	out := make([]TridiagonalStepDTO, len(steps))
 	for i, s := range steps {
-		out[i] = TridiagonalStepDTO{Alpha: s.Alpha, Beta: s.Beta, Index: s.Index}
+		out[i] = TridiagonalStepDTO{Alpha: s.Alpha, Beta: s.Beta, Index: s.Index, Phase: s.Phase, X: s.X}
 	}
 	return out
 }
@@ -35,8 +37,9 @@ type SeidelRequest struct {
 }
 
 type SeidelStepDTO struct {
-	X    []float64 `json:"x"`
-	Norm float64   `json:"norm"`
+	X     []float64 `json:"x"`
+	Norm  float64   `json:"norm"`
+	Phase string    `json:"phase"`
 }
 
 type SeidelResponse struct {
@@ -48,7 +51,7 @@ type SeidelResponse struct {
 func SeidelStepMapping(steps []gomath.SeidelStep) []SeidelStepDTO {
 	out := make([]SeidelStepDTO, len(steps))
 	for i, s := range steps {
-		out[i] = SeidelStepDTO{X: s.X, Norm: s.Norm}
+		out[i] = SeidelStepDTO{X: s.X, Norm: s.Norm, Phase: s.Phase}
 	}
 	return out
 }
