@@ -1,15 +1,22 @@
 import { calculateMethod } from '../api.js';
 
+// Вариант 5
 const DEFAULT_TRIDIAG_N = 4;
 const DEFAULT_TRIDIAG = {
-    a: [0, -1, -1, -1],
-    b: [4, 4, 4, 4],
-    c: [-1, -1, -1, 0],
-    d: [3, 2, 2, 3]
+    a: [0, -1,  2, -1],
+    b: [8,  7,  9,  5],
+    c: [-2, -2, -4,  0],
+    d: [10.0, 5.5, 15.5, 9.0]
 };
+// Та же матрица что и прогонка, развёрнутая в полную форму
 const DEFAULT_SEIDEL = {
-    matrix: [[10, 1, 1], [2, 10, 1], [2, 2, 10]],
-    vector: [12, 13, 14]
+    matrix: [
+        [ 8, -2,  0,  0],
+        [-1,  7, -2,  0],
+        [ 0,  2,  9, -4],
+        [ 0,  0, -1,  5],
+    ],
+    vector: [10.0, 5.5, 15.5, 9.0],
 };
 
 function buildTridiagInputs(n) {
@@ -116,11 +123,11 @@ export function init() {
     });
 
     matrixSize?.addEventListener('input', () => {
-        buildMatrixSeidel(parseInt(matrixSize.value) || 3);
+        buildMatrixSeidel(parseInt(matrixSize.value) || DEFAULT_TRIDIAG_N);
     });
 
     buildTridiagInputs(DEFAULT_TRIDIAG_N);
-    buildMatrixSeidel(3);
+    buildMatrixSeidel(DEFAULT_TRIDIAG_N);
     // Default: show tridiagonal
     tridiagInput?.classList.remove('hidden');
     seidelInput?.classList.add('hidden');
@@ -141,7 +148,7 @@ export async function calculate(plotLoader, onSteps) {
                 a: readVec('a'), b: readVec('b'), c: readVec('c'), d: readVec('d')
             });
         } else {
-            const n = parseInt(document.getElementById('matrix-size-task2').value) || 3;
+            const n = parseInt(document.getElementById('matrix-size-task2').value) || DEFAULT_TRIDIAG_N;
             const { matrix, vector } = readMatrix(n);
             data = await calculateMethod('task2', 'seidel', { matrix, vector, epsilon });
         }

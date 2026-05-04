@@ -1,14 +1,13 @@
 import { calculateMethod } from '../api.js';
 
+// Вариант 5
 const DEFAULTS = {
-    gauss: {
-        matrix: [[4, -1, 0], [-1, 4, -1], [0, -1, 4]],
-        vector: [1, 5, 1]
-    },
-    simple_iter: {
-        matrix: [[10, 1, 1], [2, 10, 1], [2, 2, 10]],
-        vector: [12, 13, 14]
-    }
+    matrix: [
+        [ 9.14, -2.15, -5.11],
+        [-0.71,  3.81, -0.02],
+        [ 0.42, -1.13,  7.05],
+    ],
+    vector: [-4.16, -0.17, 6.15],
 };
 
 function buildMatrixInput(containerId, n, defaultMatrix, defaultVector, symmetric = false) {
@@ -77,9 +76,7 @@ export function init() {
 
     const rebuildMatrix = () => {
         const n = parseInt(sizeInput.value) || 3;
-        const method = methodSelect.value;
-        const def = DEFAULTS[method] || DEFAULTS.gauss;
-        buildMatrixInput('matrix-input-task1', n, def.matrix, def.vector);
+        buildMatrixInput('matrix-input-task1', n, DEFAULTS.matrix, DEFAULTS.vector);
     };
 
     sizeInput.addEventListener('input', rebuildMatrix);
