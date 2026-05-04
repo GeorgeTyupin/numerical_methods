@@ -8,7 +8,7 @@ import * as Task5 from './tasks/task5.js';
 import * as Task6 from './tasks/task6.js';
 
 // ─── State ──────────────────────────────────────────────────────────────────
-let activeTask = 'task1';
+let activeTask = '';
 let currentSteps = [];
 let currentStepIndex = 0;
 let isPlaying = false;
@@ -18,7 +18,8 @@ let currentExtra = null;
 const initializedTasks = new Set();
 
 // ─── DOM ─────────────────────────────────────────────────────────────────────
-const plotLoader    = document.getElementById('plot-loader');
+const plotLoader       = document.getElementById('plot-loader');
+const plotPlaceholder  = document.getElementById('plot-placeholder');
 const playerControls = document.getElementById('player-controls');
 const currentStepEl  = document.getElementById('current-step');
 const totalStepsEl   = document.getElementById('total-steps');
@@ -60,8 +61,8 @@ function switchTask(taskId) {
     document.querySelectorAll('.task-form').forEach(f => f.classList.add('hidden'));
     document.getElementById(`form-${taskId}`)?.classList.remove('hidden');
 
-    // Player only for task4
-    playerControls.classList.toggle('hidden', taskId !== 'task4');
+    // Hide player until calculation runs
+    playerControls.classList.add('hidden');
 
     // Reset steps
     stopPlayback();
@@ -75,15 +76,12 @@ function switchTask(taskId) {
     }
 
     // Reset plot
-    Plotly.react('plot', [], {
-        paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
-        font: { color: '#9ca3af' }, margin: { t: 40, r: 20, b: 40, l: 40 },
-        xaxis: { gridcolor: 'rgba(255,255,255,0.05)', zerolinecolor: 'rgba(255,255,255,0.2)' },
-        yaxis: { gridcolor: 'rgba(255,255,255,0.05)', zerolinecolor: 'rgba(255,255,255,0.2)' },
-    });
-
     if (taskId === 'task4') {
+        plotPlaceholder?.classList.add('hidden');
         handleBaseGraphUpdate();
+    } else {
+        Plotly.purge('plot');
+        plotPlaceholder?.classList.remove('hidden');
     }
 }
 
@@ -159,25 +157,20 @@ async function handleCalculate(task) {
         switch (task) {
             case 'task1':
                 await Task1.calculate(plotLoader, (steps, method) => {
-                    currentSteps = steps || [];
                     currentMethod = method;
-                    currentExtra = null;
-                    renderStepsForTask(task, steps, method, null);
+                    startPlayer(steps, null);
                 });
                 break;
             case 'task2':
                 await Task2.calculate(plotLoader, (steps, method) => {
-                    currentSteps = steps || [];
                     currentMethod = method;
-                    renderStepsForTask(task, steps, method, null);
+                    startPlayer(steps, null);
                 });
                 break;
             case 'task3':
                 await Task3.calculate(plotLoader, (steps, method, extra) => {
-                    currentSteps = steps || [];
                     currentMethod = method;
-                    currentExtra = extra;
-                    renderStepsForTask(task, steps, method, extra);
+                    startPlayer(steps, extra ?? null);
                 });
                 break;
             case 'task4':
@@ -185,18 +178,14 @@ async function handleCalculate(task) {
                 break;
             case 'task5':
                 await Task5.calculate(plotLoader, (steps, method, extra) => {
-                    currentSteps = steps || [];
                     currentMethod = method;
-                    currentExtra = extra;
-                    renderStepsForTask(task, steps, method, extra);
+                    startPlayer(steps, extra ?? null);
                 });
                 break;
             case 'task6':
                 await Task6.calculate(plotLoader, (segments, method, extra) => {
-                    currentSteps = segments || [];
                     currentMethod = method;
-                    currentExtra = extra;
-                    renderStepsForTask(task, segments, method, extra);
+                    startPlayer(segments, extra ?? null);
                 });
                 break;
         }
@@ -206,34 +195,29 @@ async function handleCalculate(task) {
     }
 }
 
-function renderStepsForTask(task, steps, method, extra) {
-    if (!steps || steps.length === 0) return;
+// ─── Универсальный запуск плеера ─────────────────────────────────────────────
+// После вычисления показываем ПОСЛЕДНИЙ шаг (итоговый результат).
+// Нажатие Play перематывает на шаг 1 и воспроизводит до конца.
+function startPlayer(steps, extra) {
+    currentSteps = steps || [];
+    currentExtra = extra;
 
-    switch (task) {
-        case 'task1':
-            if (method === 'gauss') {
-                drawMatrixHeatmap(steps[0].matrix, steps[0].vector, steps[0].pivot);
-            } else {
-                drawConvergence(steps.map(s => s.norm));
-            }
-            break;
-        case 'task2':
-            if (method === 'tridiagonal') {
-                drawConvergence(steps.map((s, i) => i), 'Шаги прогонки', '#00f0ff');
-            } else {
-                drawConvergence(steps.map(s => s.norm));
-            }
-            break;
-        case 'task3':
-            drawMatrixHeatmap(steps[0].matrix);
-            break;
-        case 'task5':
-            if (extra) drawInterpolation(extra.x, extra.y, extra.curveX, extra.curveY, extra.xs, extra.value);
-            break;
-        case 'task6':
-            if (extra) drawSpline(extra.x, extra.y, extra.curveX, extra.curveY, 0, steps);
-            break;
-    }
+    if (currentSteps.length === 0) return;
+
+    // Показываем последний шаг — итоговое состояние
+    currentStepIndex = currentSteps.length - 1;
+
+    plotPlaceholder?.classList.add('hidden');
+    playerControls.classList.remove('hidden');
+
+    totalStepsEl.textContent = currentSteps.length;
+    currentStepEl.textContent = currentSteps.length;
+    stopPlayback();
+    btnPrev.disabled = currentSteps.length <= 1;
+    btnNext.disabled = true;
+    btnPlayPause.disabled = currentSteps.length <= 1;
+
+    drawStep(activeTask, currentMethod, currentStepIndex, currentSteps, currentExtra);
 }
 
 // ─── Task 4 calculate ────────────────────────────────────────────────────────
@@ -273,8 +257,6 @@ async function handleTask4Calculate() {
         const newSpan   = Math.abs(maxX - minX) / 2 + 2;
         drawBaseGraph(formula, newCenter, newSpan);
 
-        currentSteps = data.steps;
-        currentStepIndex = 0;
         currentMethod = method;
 
         document.getElementById('results-box').classList.remove('hidden');
@@ -282,23 +264,18 @@ async function handleTask4Calculate() {
         document.getElementById('res-iters').textContent  = data.iterations;
         document.getElementById('res-error').textContent  = (data.error || 0).toExponential(2);
 
-        totalStepsEl.textContent   = currentSteps.length;
-        currentStepEl.textContent  = '1';
-        stopPlayback();
-        btnPrev.disabled      = true;
-        btnNext.disabled      = currentSteps.length <= 1;
-        btnPlayPause.disabled = currentSteps.length <= 1;
-        drawStep(0, currentSteps, method, formula);
+        // extra = formula (нужна для отрисовки касательных/итераций)
+        startPlayer(data.steps, formula);
     } finally {
         plotLoader.classList.add('hidden');
     }
 }
 
-// ─── Player (task4 only) ──────────────────────────────────────────────────────
+// ─── Player (универсальный) ───────────────────────────────────────────────────
 function nextStep() {
     if (currentStepIndex < currentSteps.length - 1) {
         currentStepIndex++;
-        drawStep(currentStepIndex, currentSteps, currentMethod, formulaInput.value);
+        drawStep(activeTask, currentMethod, currentStepIndex, currentSteps, currentExtra);
         currentStepEl.textContent = currentStepIndex + 1;
         btnPrev.disabled = false;
         if (currentStepIndex === currentSteps.length - 1) { btnNext.disabled = true; stopPlayback(); }
@@ -308,7 +285,7 @@ function nextStep() {
 function prevStep() {
     if (currentStepIndex > 0) {
         currentStepIndex--;
-        drawStep(currentStepIndex, currentSteps, currentMethod, formulaInput.value);
+        drawStep(activeTask, currentMethod, currentStepIndex, currentSteps, currentExtra);
         currentStepEl.textContent = currentStepIndex + 1;
         btnNext.disabled = false;
         if (currentStepIndex === 0) btnPrev.disabled = true;
@@ -319,8 +296,10 @@ function togglePlayback() {
     if (isPlaying) { stopPlayback(); return; }
     if (currentStepIndex === currentSteps.length - 1) {
         currentStepIndex = 0;
-        drawStep(0, currentSteps, currentMethod, formulaInput.value);
+        drawStep(activeTask, currentMethod, 0, currentSteps, currentExtra);
         currentStepEl.textContent = 1;
+        btnPrev.disabled = true;
+        btnNext.disabled = false;
     }
     isPlaying = true;
     iconPlay.classList.add('hidden'); iconPause.classList.remove('hidden');
