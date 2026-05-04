@@ -56,6 +56,19 @@ input[type=range]::-webkit-slider-thumb:hover {
     transform: scale(1.2);
 }
 
+/* Task tab active state */
+.task-tab.active,
+.task-tab[data-active="true"] {
+    background: rgba(21, 27, 43, 0.9);
+    color: #00f0ff;
+}
+
+/* Matrix cell inputs */
+.matrix-cell:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
 /* Plotly overrides (transparent tooltips, dark mode fix) */
 .js-plotly-plot .plotly .modebar {
     opacity: 0.2 !important;
