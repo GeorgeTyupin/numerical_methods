@@ -26,9 +26,10 @@ type DichotomyRequest struct {
 }
 
 type DichotomyStep struct {
-	A float64 `json:"a"` // Левая граница отрезка на текущем шаге
-	B float64 `json:"b"` // Правая граница отрезка на текущем шаге
-	C float64 `json:"c"` // Середина отрезка на текущем шаге
+	A  float64 `json:"a"`  // Левая граница отрезка на текущем шаге
+	B  float64 `json:"b"`  // Правая граница отрезка на текущем шаге
+	C  float64 `json:"c"`  // Середина отрезка на текущем шаге
+	FC float64 `json:"fc"` // f(c)
 }
 
 type DichotomyResponse struct {
@@ -40,8 +41,10 @@ func DichotomyStepMapping(steps []math.DichotomyStep) []DichotomyStep {
 	dichotomySteps := make([]DichotomyStep, len(steps))
 	for i, step := range steps {
 		dichotomySteps[i] = DichotomyStep{
-			A: step.A,
-			B: step.B,
+			A:  step.A,
+			B:  step.B,
+			C:  step.C,
+			FC: step.FC,
 		}
 	}
 	return dichotomySteps
@@ -60,6 +63,7 @@ type NewtonStep struct {
 	XPrev float64 `json:"x_prev"` // Текущий x_n
 	XNew  float64 `json:"x_new"`  // Вычисленный x_n+1
 	Fx    float64 `json:"fx"`     // Значение f(x_prev)
+	DFx   float64 `json:"dfx"`    // Значение f'(x_prev)
 }
 
 // NewtonStepMapping конвертирует []math.NewtonStep в []NewtonStep
@@ -70,6 +74,7 @@ func NewtonStepMapping(steps []math.NewtonStep) []NewtonStep {
 			XPrev: step.XPrev,
 			XNew:  step.XNew,
 			Fx:    step.Fx,
+			DFx:   step.DFx,
 		}
 	}
 	return newtonSteps

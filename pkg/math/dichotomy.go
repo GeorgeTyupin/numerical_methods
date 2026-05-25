@@ -9,8 +9,10 @@ import (
 )
 
 type DichotomyStep struct {
-	A float64
-	B float64
+	A  float64
+	B  float64
+	C  float64 // середина отрезка
+	FC float64 // f(c)
 }
 
 type DichotomyMethodCalculator struct {
@@ -76,7 +78,7 @@ func (c *DichotomyMethodCalculator) Calculate() ([]DichotomyStep, float64, int, 
 		}
 
 		// Записываем шаг для фронтенда
-		steps = append(steps, DichotomyStep{A: a, B: b})
+		steps = append(steps, DichotomyStep{A: a, B: b, C: mid, FC: fmid})
 
 		// Проверка на точность или точное попадание в корень
 		if math.Abs(b-a) < c.Epsilon || fmid == 0 {

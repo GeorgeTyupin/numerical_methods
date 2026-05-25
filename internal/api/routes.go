@@ -56,6 +56,31 @@ func RegisterRoutes(logger *slog.Logger) *chi.Mux {
 		r.Route("/task6", func(r chi.Router) {
 			r.Post("/cubic_spline", task6.CubicSpline)
 		})
+
+		task7 := handlers.NewTask7Handler(logger)
+		r.Route("/task7", func(r chi.Router) {
+			r.Post("/lss", task7.LSS)
+		})
+
+		task8 := handlers.NewTask8Handler(logger)
+		r.Route("/task8", func(r chi.Router) {
+			r.Post("/diff", task8.Diff)
+		})
+
+		task9 := handlers.NewTask9Handler(logger)
+		r.Route("/task9", func(r chi.Router) {
+			r.Post("/simpson", task9.Simpson)
+		})
+
+		task10 := handlers.NewTask10Handler(logger)
+		r.Route("/task10", func(r chi.Router) {
+			r.Post("/cauchy", task10.Cauchy)
+		})
+
+		task11 := handlers.NewTask11Handler(logger)
+		r.Route("/task11", func(r chi.Router) {
+			r.Post("/bvp", task11.BVP)
+		})
 	})
 
 	return r

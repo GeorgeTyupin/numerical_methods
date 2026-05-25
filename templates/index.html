@@ -40,24 +40,39 @@
     <div class="relative w-full max-w-7xl h-full max-h-[900px] flex flex-col gap-4 z-10">
 
         <!-- Task Navigation Tabs -->
-        <nav class="flex gap-2 glassmorphism rounded-2xl p-2 border border-white/5 shadow-panel shrink-0">
-            <button data-task="task1" class="task-tab flex-1 py-2 px-3 rounded-xl text-xs font-semibold transition-all text-gray-400 hover:text-gray-200">
+        <nav class="flex gap-1 glassmorphism rounded-2xl p-2 border border-white/5 shadow-panel shrink-0 overflow-x-auto custom-scrollbar">
+            <button data-task="task1" class="task-tab shrink-0 py-2 px-3 rounded-xl text-xs font-semibold transition-all text-gray-400 hover:text-gray-200 whitespace-nowrap">
                 Задание 1<br><span class="font-normal opacity-70">СЛАУ</span>
             </button>
-            <button data-task="task2" class="task-tab flex-1 py-2 px-3 rounded-xl text-xs font-semibold transition-all text-gray-400 hover:text-gray-200">
+            <button data-task="task2" class="task-tab shrink-0 py-2 px-3 rounded-xl text-xs font-semibold transition-all text-gray-400 hover:text-gray-200 whitespace-nowrap">
                 Задание 2<br><span class="font-normal opacity-70">СЛАУ (спец.)</span>
             </button>
-            <button data-task="task3" class="task-tab flex-1 py-2 px-3 rounded-xl text-xs font-semibold transition-all text-gray-400 hover:text-gray-200">
+            <button data-task="task3" class="task-tab shrink-0 py-2 px-3 rounded-xl text-xs font-semibold transition-all text-gray-400 hover:text-gray-200 whitespace-nowrap">
                 Задание 3<br><span class="font-normal opacity-70">Собств. значения</span>
             </button>
-            <button data-task="task4" class="task-tab flex-1 py-2 px-3 rounded-xl text-xs font-semibold transition-all text-gray-400 hover:text-gray-200">
+            <button data-task="task4" class="task-tab shrink-0 py-2 px-3 rounded-xl text-xs font-semibold transition-all text-gray-400 hover:text-gray-200 whitespace-nowrap">
                 Задание 4<br><span class="font-normal opacity-70">Корни ур-ния</span>
             </button>
-            <button data-task="task5" class="task-tab flex-1 py-2 px-3 rounded-xl text-xs font-semibold transition-all text-gray-400 hover:text-gray-200">
+            <button data-task="task5" class="task-tab shrink-0 py-2 px-3 rounded-xl text-xs font-semibold transition-all text-gray-400 hover:text-gray-200 whitespace-nowrap">
                 Задание 5<br><span class="font-normal opacity-70">Интерполяция</span>
             </button>
-            <button data-task="task6" class="task-tab flex-1 py-2 px-3 rounded-xl text-xs font-semibold transition-all text-gray-400 hover:text-gray-200">
+            <button data-task="task6" class="task-tab shrink-0 py-2 px-3 rounded-xl text-xs font-semibold transition-all text-gray-400 hover:text-gray-200 whitespace-nowrap">
                 Задание 6<br><span class="font-normal opacity-70">Сплайны</span>
+            </button>
+            <button data-task="task7" class="task-tab shrink-0 py-2 px-3 rounded-xl text-xs font-semibold transition-all text-gray-400 hover:text-gray-200 whitespace-nowrap">
+                Задание 7<br><span class="font-normal opacity-70">МНК</span>
+            </button>
+            <button data-task="task8" class="task-tab shrink-0 py-2 px-3 rounded-xl text-xs font-semibold transition-all text-gray-400 hover:text-gray-200 whitespace-nowrap">
+                Задание 8<br><span class="font-normal opacity-70">Дифференцирование</span>
+            </button>
+            <button data-task="task9" class="task-tab shrink-0 py-2 px-3 rounded-xl text-xs font-semibold transition-all text-gray-400 hover:text-gray-200 whitespace-nowrap">
+                Задание 9<br><span class="font-normal opacity-70">Интегрирование</span>
+            </button>
+            <button data-task="task10" class="task-tab shrink-0 py-2 px-3 rounded-xl text-xs font-semibold transition-all text-gray-400 hover:text-gray-200 whitespace-nowrap">
+                Задание 10<br><span class="font-normal opacity-70">Задача Коши</span>
+            </button>
+            <button data-task="task11" class="task-tab shrink-0 py-2 px-3 rounded-xl text-xs font-semibold transition-all text-gray-400 hover:text-gray-200 whitespace-nowrap">
+                Задание 11<br><span class="font-normal opacity-70">Краевая задача</span>
             </button>
         </nav>
 
@@ -336,12 +351,197 @@
                     </div>
                 </div>
 
+                <!-- Task 7 form: МНК -->
+                <div id="form-task7" class="task-form hidden flex flex-col gap-4">
+                    <div class="control-group">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Узловые точки (x, y)</label>
+                            <button type="button" id="add-point-task7" class="text-brand-accent text-xs hover:text-white transition-colors flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                Добавить
+                            </button>
+                        </div>
+                        <div id="points-task7" class="flex flex-col gap-1"></div>
+                    </div>
+                    <button type="button" data-task="task7" class="btn-calculate mt-2 w-full relative group overflow-hidden rounded-xl p-[1px]">
+                        <span class="absolute inset-0 bg-gradient-to-r from-brand-accent to-brand-glow opacity-70 group-hover:opacity-100 transition-opacity rounded-xl blur-sm"></span>
+                        <span class="absolute inset-0 bg-gradient-to-r from-brand-accent to-brand-glow rounded-xl"></span>
+                        <div class="relative bg-brand-surface py-3 px-4 rounded-xl flex items-center justify-center group-hover:bg-opacity-0 transition-all">
+                            <span class="font-bold tracking-wide text-white">ВЫЧИСЛИТЬ</span>
+                        </div>
+                    </button>
+                    <div id="results-task7" class="hidden bg-[#0a0f19]/80 rounded-xl p-4 border border-white/5">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">МНК — Коэффициенты</h3>
+                        <div class="space-y-1">
+                            <div class="flex justify-between"><span class="text-xs text-gray-500">Линейный:</span><span id="coeffs-linear-task7" class="font-mono text-brand-accent text-xs"></span></div>
+                            <div class="flex justify-between"><span class="text-xs text-gray-500">Квадратичный:</span><span id="coeffs-quad-task7" class="font-mono text-brand-accent text-xs"></span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Task 8 form: Дифференцирование -->
+                <div id="form-task8" class="task-form hidden flex flex-col gap-4">
+                    <div class="control-group">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Узловые точки (x, y)</label>
+                            <button type="button" id="add-point-task8" class="text-brand-accent text-xs hover:text-white transition-colors flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                Добавить
+                            </button>
+                        </div>
+                        <div id="points-task8" class="flex flex-col gap-1"></div>
+                    </div>
+                    <button type="button" data-task="task8" class="btn-calculate mt-2 w-full relative group overflow-hidden rounded-xl p-[1px]">
+                        <span class="absolute inset-0 bg-gradient-to-r from-brand-accent to-brand-glow opacity-70 group-hover:opacity-100 transition-opacity rounded-xl blur-sm"></span>
+                        <span class="absolute inset-0 bg-gradient-to-r from-brand-accent to-brand-glow rounded-xl"></span>
+                        <div class="relative bg-brand-surface py-3 px-4 rounded-xl flex items-center justify-center group-hover:bg-opacity-0 transition-all">
+                            <span class="font-bold tracking-wide text-white">ВЫЧИСЛИТЬ</span>
+                        </div>
+                    </button>
+                    <div id="results-task8" class="hidden bg-[#0a0f19]/80 rounded-xl p-4 border border-white/5">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Производные</h3>
+                        <div id="deriv-result-task8" class="font-mono text-brand-accent text-xs space-y-1"></div>
+                    </div>
+                </div>
+
+                <!-- Task 9 form: Симпсон -->
+                <div id="form-task9" class="task-form hidden flex flex-col gap-4">
+                    <div class="control-group">
+                        <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Функция f(x)</label>
+                        <input type="text" id="formula-task9" value="cos(x)/(x+1)" placeholder="например: sin(x)/x" class="w-full bg-brand-surface border border-white/10 rounded-xl px-4 py-3 text-gray-200 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="control-group">
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">a</label>
+                            <input type="number" id="a-task9" value="0" step="0.1" class="w-full bg-brand-surface border border-white/10 rounded-xl px-3 py-2 text-gray-200 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all">
+                        </div>
+                        <div class="control-group">
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">b</label>
+                            <input type="number" id="b-task9" value="1" step="0.1" class="w-full bg-brand-surface border border-white/10 rounded-xl px-3 py-2 text-gray-200 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Точность (ε)</label>
+                            <span id="precision-value-task9" class="text-brand-accent font-mono text-xs">1e-4</span>
+                        </div>
+                        <input type="range" id="precision-slider-task9" min="1" max="8" value="4" step="1" class="w-full h-2 bg-brand-surface rounded-lg appearance-none cursor-pointer accent-brand-accent">
+                        <div class="flex justify-between text-[10px] text-gray-600 font-mono mt-1 px-1"><span>1e-1</span><span>1e-8</span></div>
+                    </div>
+                    <button type="button" data-task="task9" class="btn-calculate mt-2 w-full relative group overflow-hidden rounded-xl p-[1px]">
+                        <span class="absolute inset-0 bg-gradient-to-r from-brand-accent to-brand-glow opacity-70 group-hover:opacity-100 transition-opacity rounded-xl blur-sm"></span>
+                        <span class="absolute inset-0 bg-gradient-to-r from-brand-accent to-brand-glow rounded-xl"></span>
+                        <div class="relative bg-brand-surface py-3 px-4 rounded-xl flex items-center justify-center group-hover:bg-opacity-0 transition-all">
+                            <span class="font-bold tracking-wide text-white">ВЫЧИСЛИТЬ</span>
+                        </div>
+                    </button>
+                    <div id="results-task9" class="hidden bg-[#0a0f19]/80 rounded-xl p-4 border border-white/5">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Результат</h3>
+                        <div class="flex justify-between"><span class="text-sm text-gray-500">I ≈</span><span id="integral-task9" class="font-mono text-brand-accent font-bold">...</span></div>
+                        <div class="flex justify-between mt-1"><span class="text-xs text-gray-500">Итераций:</span><span id="iter-task9" class="font-mono text-gray-300 text-xs"></span></div>
+                    </div>
+                </div>
+
+                <!-- Task 10 form: Задача Коши -->
+                <div id="form-task10" class="task-form hidden flex flex-col gap-4">
+                    <div class="control-group">
+                        <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">y' = f(x, y)</label>
+                        <input type="text" id="formula-task10" value="cos(y)/(x+2) + 0.3*y^2" placeholder="например: x - y^2" class="w-full bg-brand-surface border border-white/10 rounded-xl px-4 py-3 text-gray-200 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="control-group">
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">x₀</label>
+                            <input type="number" id="x0-task10" value="0" step="0.1" class="w-full bg-brand-surface border border-white/10 rounded-xl px-3 py-2 text-gray-200 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all">
+                        </div>
+                        <div class="control-group">
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">y₀</label>
+                            <input type="number" id="y0-task10" value="0" step="0.1" class="w-full bg-brand-surface border border-white/10 rounded-xl px-3 py-2 text-gray-200 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all">
+                        </div>
+                        <div class="control-group">
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">x_end</label>
+                            <input type="number" id="xend-task10" value="1" step="0.1" class="w-full bg-brand-surface border border-white/10 rounded-xl px-3 py-2 text-gray-200 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all">
+                        </div>
+                        <div class="control-group">
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">h</label>
+                            <input type="number" id="h-task10" value="0.1" step="0.05" min="0.001" class="w-full bg-brand-surface border border-white/10 rounded-xl px-3 py-2 text-gray-200 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all">
+                        </div>
+                    </div>
+                    <button type="button" data-task="task10" class="btn-calculate mt-2 w-full relative group overflow-hidden rounded-xl p-[1px]">
+                        <span class="absolute inset-0 bg-gradient-to-r from-brand-accent to-brand-glow opacity-70 group-hover:opacity-100 transition-opacity rounded-xl blur-sm"></span>
+                        <span class="absolute inset-0 bg-gradient-to-r from-brand-accent to-brand-glow rounded-xl"></span>
+                        <div class="relative bg-brand-surface py-3 px-4 rounded-xl flex items-center justify-center group-hover:bg-opacity-0 transition-all">
+                            <span class="font-bold tracking-wide text-white">ВЫЧИСЛИТЬ</span>
+                        </div>
+                    </button>
+                    <div id="results-task10" class="hidden bg-[#0a0f19]/80 rounded-xl p-4 border border-white/5">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Результат</h3>
+                        <div class="flex justify-between"><span class="text-xs text-gray-500">Точек:</span><span id="points-count-task10" class="font-mono text-gray-300 text-xs"></span></div>
+                        <div class="flex justify-between mt-1"><span class="text-xs text-gray-500">max|RK4−Адамс|:</span><span id="max-diff-task10" class="font-mono text-brand-accent text-xs"></span></div>
+                    </div>
+                </div>
+
+                <!-- Task 11 form: Краевая задача -->
+                <div id="form-task11" class="task-form hidden flex flex-col gap-4">
+                    <div class="control-group">
+                        <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Уравнение: y'' + p(x)y' + q(x)y = f(x)</label>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">p(x)</label>
+                            <input type="text" id="p-task11" value="2" placeholder="0" class="w-full bg-brand-surface border border-white/10 rounded-xl px-3 py-2 text-gray-200 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">q(x)</label>
+                            <input type="text" id="q-task11" value="-x" placeholder="-1" class="w-full bg-brand-surface border border-white/10 rounded-xl px-3 py-2 text-gray-200 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">f(x)</label>
+                            <input type="text" id="f-task11" value="x^2" placeholder="x" class="w-full bg-brand-surface border border-white/10 rounded-xl px-3 py-2 text-gray-200 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><label class="block text-xs text-gray-400 mb-1">a</label><input type="number" id="a-task11" value="0.6" step="0.1" class="w-full bg-brand-surface border border-white/10 rounded-xl px-3 py-2 text-gray-200 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all"></div>
+                        <div><label class="block text-xs text-gray-400 mb-1">b</label><input type="number" id="b-task11" value="0.9" step="0.1" class="w-full bg-brand-surface border border-white/10 rounded-xl px-3 py-2 text-gray-200 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all"></div>
+                    </div>
+                    <div class="control-group">
+                        <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Левое ГУ: α·y(a) + β·y'(a) = γ</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div><label class="block text-[10px] text-gray-500 mb-1">α</label><input type="number" id="alpha-a-task11" value="0" step="0.1" class="w-full bg-brand-surface border border-white/10 rounded-xl px-2 py-1.5 text-gray-200 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all"></div>
+                            <div><label class="block text-[10px] text-gray-500 mb-1">β</label><input type="number" id="beta-a-task11" value="1" step="0.1" class="w-full bg-brand-surface border border-white/10 rounded-xl px-2 py-1.5 text-gray-200 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all"></div>
+                            <div><label class="block text-[10px] text-gray-500 mb-1">γ</label><input type="number" id="gamma-a-task11" value="0.7" step="0.1" class="w-full bg-brand-surface border border-brand-accent/30 rounded-xl px-2 py-1.5 text-brand-accent font-mono text-xs focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all"></div>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Правое ГУ: α·y(b) + β·y'(b) = γ</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div><label class="block text-[10px] text-gray-500 mb-1">α</label><input type="number" id="alpha-b-task11" value="1" step="0.1" class="w-full bg-brand-surface border border-white/10 rounded-xl px-2 py-1.5 text-gray-200 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all"></div>
+                            <div><label class="block text-[10px] text-gray-500 mb-1">β</label><input type="number" id="beta-b-task11" value="-0.5" step="0.1" class="w-full bg-brand-surface border border-white/10 rounded-xl px-2 py-1.5 text-gray-200 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all"></div>
+                            <div><label class="block text-[10px] text-gray-500 mb-1">γ</label><input type="number" id="gamma-b-task11" value="1" step="0.1" class="w-full bg-brand-surface border border-brand-accent/30 rounded-xl px-2 py-1.5 text-brand-accent font-mono text-xs focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all"></div>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="block text-xs text-gray-400 mb-1">Шаг h</label>
+                        <input type="number" id="h-task11" value="0.1" step="0.05" min="0.01" class="w-full bg-brand-surface border border-white/10 rounded-xl px-3 py-2 text-gray-200 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all">
+                    </div>
+                    <button type="button" data-task="task11" class="btn-calculate mt-2 w-full relative group overflow-hidden rounded-xl p-[1px]">
+                        <span class="absolute inset-0 bg-gradient-to-r from-brand-accent to-brand-glow opacity-70 group-hover:opacity-100 transition-opacity rounded-xl blur-sm"></span>
+                        <span class="absolute inset-0 bg-gradient-to-r from-brand-accent to-brand-glow rounded-xl"></span>
+                        <div class="relative bg-brand-surface py-3 px-4 rounded-xl flex items-center justify-center group-hover:bg-opacity-0 transition-all">
+                            <span class="font-bold tracking-wide text-white">ВЫЧИСЛИТЬ</span>
+                        </div>
+                    </button>
+                    <div id="results-task11" class="hidden bg-[#0a0f19]/80 rounded-xl p-4 border border-white/5">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Решение</h3>
+                        <div id="solution-task11" class="font-mono text-xs space-y-0.5"></div>
+                    </div>
+                </div>
+
             </aside>
 
             <!-- MAIN AREA -->
             <main class="flex-1 flex flex-col min-w-0 bg-[#0a0f19]/50 rounded-2xl border border-white/5 overflow-hidden relative">
 
-                <div id="plot" class="flex-1 w-full h-full relative z-10"></div>
+                <div id="plot" class="flex-1 w-full min-h-0 overflow-hidden"></div>
                 <div id="plot-placeholder" class="absolute inset-0 z-5 flex flex-col items-center justify-center gap-4 pointer-events-none hidden">
                     <svg class="w-16 h-16 text-white/5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
@@ -353,8 +553,16 @@
                     <div class="w-12 h-12 border-4 border-brand-accent/20 border-t-brand-accent rounded-full animate-spin shadow-neon"></div>
                 </div>
 
+                <!-- Step Iteration Table -->
+                <div id="step-table-container" class="hidden relative z-20 shrink-0 overflow-auto border-t border-white/5 bg-brand-base/60" style="max-height: 190px;">
+                    <table id="step-table" class="w-full text-xs font-mono text-gray-300 border-collapse min-w-max">
+                        <thead id="step-table-head" class="sticky top-0 bg-brand-surface/95 backdrop-blur text-gray-500 uppercase tracking-wider text-[10px]"></thead>
+                        <tbody id="step-table-body"></tbody>
+                    </table>
+                </div>
+
                 <!-- Player Controls -->
-                <div id="player-controls" class="h-16 border-t border-white/5 bg-brand-surface/50 backdrop-blur-md flex items-center justify-between px-6 z-20 shrink-0">
+                <div id="player-controls" class="hidden h-16 border-t border-white/5 bg-brand-surface/50 backdrop-blur-md flex items-center justify-between px-6 z-20 shrink-0">
                     <div class="flex items-center gap-4">
                         <span class="text-xs font-semibold text-gray-400 uppercase tracking-widest hidden md:block">Шаг</span>
                         <div class="flex items-center gap-3">

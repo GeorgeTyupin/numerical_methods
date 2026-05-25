@@ -95,6 +95,11 @@ export function drawStep(taskId, method, index, steps, extra) {
             else _drawStepNewtonInterp(index, steps, extra);
             break;
         case 'task6': _drawStepSpline(index, steps, extra); break;
+        case 'task7': _drawStepLSS(index, steps, extra); break;
+        case 'task8': _drawStepDiff(index, steps); break;
+        case 'task9': _drawStepSimpson(index, steps, extra); break;
+        case 'task10': _drawStepCauchy(index, steps); break;
+        case 'task11': _drawStepBVP(index, steps, extra); break;
     }
 }
 
@@ -188,7 +193,6 @@ function _drawStepGauss(index, steps) {
     // Формула на каждом шаге обратного хода с явными именами переменных
     let formulaAnnotation = null;
     if (isBackward && xPartial.length > 0) {
-        // Строка "Используем: x₃ = 0.6429, x₂ = 1.5714"
         const knownParts = [];
         for (let j = pivot + 1; j < n; j++) {
             if (Math.abs(xPartial[j]) > 1e-12 || j > pivot) {
@@ -196,8 +200,6 @@ function _drawStepGauss(index, steps) {
             }
         }
         const knownLine = knownParts.length > 0 ? `Известны: ${knownParts.join(', ')}<br>` : '';
-
-        // Строка формулы: x₁ = (b₁ − a₁₂·x₂ − a₁₃·x₃) / a₁₁ = result
         let formulaParts = `${vector[pivot].toFixed(4)}`;
         for (let j = pivot + 1; j < n; j++) {
             const a_ij = matrix[pivot][j];
@@ -207,11 +209,10 @@ function _drawStepGauss(index, steps) {
         }
         const a_ii = matrix[pivot][pivot].toFixed(4);
         const formulaLine = `x<sub>${pivot+1}</sub> = ( ${formulaParts} ) / ${a_ii} = <b>${xPartial[pivot].toFixed(6)}</b>`;
-
-        const hasTwoLines = knownLine.length > 0;
         formulaAnnotation = {
-            x: 0.5, y: hasTwoLines ? -0.07 : -0.04,
+            x: 0.5, y: -0.02,
             xref: 'paper', yref: 'paper',
+            xanchor: 'center', yanchor: 'top',
             text: knownLine + formulaLine,
             showarrow: false,
             font: { color: '#a3e635', size: 12, family: 'monospace' },
@@ -240,7 +241,7 @@ function _drawStepGauss(index, steps) {
     }], {
         ...baseLayout,
         title: { text: phaseLabel, font: { color: '#9ca3af', size: 12 } },
-        margin: { t: 50, r: 20, b: isBackward ? 72 : 10, l: 20 },
+        margin: { t: 50, r: 20, b: isBackward ? 55 : 10, l: 20 },
         annotations: formulaAnnotation ? [formulaAnnotation] : [],
     }, { responsive: true, displayModeBar: false });
 }
@@ -284,22 +285,6 @@ function _drawStepTridiagonal(index, steps) {
             return x[i] !== 0 || i > cur ? '#4ade80' : 'rgba(0,200,100,0.15)';
         });
 
-        // Каждый шаг — формула с явными значениями переменных
-        let knownLine = '';
-        if (cur < n - 1 && Math.abs(x[cur + 1]) > 1e-12) {
-            knownLine = `Известно: x<sub>${cur+2}</sub> = ${x[cur+1].toFixed(4)}<br>`;
-        }
-        let formulaText;
-        if (cur < n - 1) {
-            formulaText = knownLine
-                + `x<sub>${cur+1}</sub> = α<sub>${cur+1}</sub>·x<sub>${cur+2}</sub> + β<sub>${cur+1}</sub>`
-                + ` = ${alpha[cur].toFixed(4)}·x<sub>${cur+2}</sub> + ${beta[cur].toFixed(4)}`
-                + ` = ${alpha[cur].toFixed(4)}·${x[cur+1].toFixed(4)} + ${beta[cur].toFixed(4)}`
-                + ` = <b>${x[cur].toFixed(6)}</b>`;
-        } else {
-            formulaText = `x<sub>${cur+1}</sub> = β<sub>${cur+1}</sub> = <b>${x[cur].toFixed(6)}</b>`;
-        }
-
         Plotly.react('plot', [{
             x: indices, y: x.map(v => v || 0),
             type: 'bar', name: 'x',
@@ -312,13 +297,6 @@ function _drawStepTridiagonal(index, steps) {
             xaxis: { ...baseLayout.xaxis, title: 'Индекс' },
             yaxis: { ...baseLayout.yaxis, title: 'x' },
             title: { text: `Обратный ход прогонки — x<sub>${cur+1}</sub>`, font: { color: '#9ca3af', size: 12 } },
-            margin: { t: 50, r: 20, b: 72, l: 40 },
-            annotations: [{
-                x: 0.5, y: knownLine.length > 0 ? -0.07 : -0.04,
-                xref: 'paper', yref: 'paper',
-                text: formulaText, showarrow: false,
-                font: { color: '#a3e635', size: 12, family: 'monospace' }, align: 'center',
-            }],
         }, { responsive: true, displayModeBar: false });
         return;
     }
@@ -368,13 +346,7 @@ function _drawStepJacobi(index, steps) {
             xaxis: { ...baseLayout.xaxis, title: 'Собственное значение' },
             yaxis: { ...baseLayout.yaxis, title: 'Значение' },
             title: { text: `Извлечение λ с диагонали: ${eigenvalues.map((v, i) => `λ${i+1} = ${v.toFixed(4)}`).join(', ')}`, font: { color: '#c084fc', size: 12 } },
-            annotations: [{
-                x: 0.5, y: -0.06, xref: 'paper', yref: 'paper',
-                text: eigenvalues.map((v, i) => `<b>λ<sub>${i+1}</sub> = ${v.toFixed(6)}</b>`).join('   '),
-                showarrow: false,
-                font: { color: '#a3e635', size: 13, family: 'monospace' }, align: 'center',
-            }],
-            margin: { t: 50, r: 20, b: 48, l: 40 },
+            margin: { t: 50, r: 20, b: 10, l: 40 },
         }, { responsive: true, displayModeBar: false });
         return;
     }
@@ -711,4 +683,336 @@ export function drawSpline(xNodes, yNodes, curveX, curveY, highlightSeg, segment
         showlegend: true,
         legend: { font: { color: '#9ca3af' }, bgcolor: 'rgba(0,0,0,0)' },
     }, { responsive: true, displayModeBar: false });
+}
+
+// ─── Task 7: МНК ──────────────────────────────────────────────────────────────
+
+function _drawStepLSS(index, steps, extra) {
+    const s = steps[index];
+    if (!s) return;
+
+    if (s.kind === 'result') {
+        // Scatter исходных точек + две аппроксимирующие кривые
+        const traces = [
+            {
+                x: extra.curveX, y: extra.curveYLinear,
+                type: 'scatter', mode: 'lines', name: 'Линейная',
+                line: { color: '#00f0ff', width: 2 }
+            },
+            {
+                x: extra.curveX, y: extra.curveYQuad,
+                type: 'scatter', mode: 'lines', name: 'Квадратичная',
+                line: { color: '#ff3366', width: 2 }
+            },
+            {
+                x: extra.x, y: extra.y,
+                type: 'scatter', mode: 'markers', name: 'Данные',
+                marker: { color: '#7000ff', size: 9, symbol: 'circle' }
+            }
+        ];
+
+        const cl = extra.coeffsLinear || [];
+        const cq = extra.coeffsQuad || [];
+        const linStr = cl.length ? `φ₁(x) = ${cl[0].toFixed(4)} + ${cl[1].toFixed(4)}·x` : '';
+        const quadStr = cq.length ? `φ₂(x) = ${cq[0].toFixed(4)} + ${cq[1].toFixed(4)}·x + ${cq[2].toFixed(4)}·x²` : '';
+
+        Plotly.react('plot', traces, {
+            ...baseLayout,
+            xaxis: { ...baseLayout.xaxis, title: 'x' },
+            yaxis: { ...baseLayout.yaxis, title: 'y' },
+            title: { text: `МНК: аппроксимация | ${linStr}  |  ${quadStr}`, font: { color: '#9ca3af', size: 11 } },
+            showlegend: true,
+            legend: { font: { color: '#9ca3af' }, bgcolor: 'rgba(0,0,0,0)' },
+            margin: { t: 55, r: 20, b: 10, l: 40 },
+        }, { responsive: true, displayModeBar: false });
+        return;
+    }
+
+    // build / gauss_forward / gauss_backward: таблица матрицы
+    const mat = s.matrix || [];
+    const vec = s.vector || [];
+    const deg = s.degree || 1;
+    const pivotRow = (s.kind === 'gauss_forward') ? (s.pivot || 0) : -1;
+
+    if (!mat.length) {
+        Plotly.react('plot', [], { ...baseLayout, title: { text: 'МНК: построение уравнений', font: { color: '#9ca3af', size: 13 } } }, { responsive: true, displayModeBar: false });
+        return;
+    }
+
+    const n = mat.length;
+    const headerVals = [['i']];
+    for (let j = 0; j <= deg; j++) headerVals.push([`x^${j}`]);
+    headerVals.push(['b']);
+
+    const cellVals = [Array.from({ length: n }, (_, i) => i)];
+    for (let j = 0; j <= deg; j++) {
+        cellVals.push(mat.map(row => row[j] !== undefined ? row[j].toFixed(4) : ''));
+    }
+    cellVals.push(vec.map(v => v.toFixed(4)));
+
+    const fillColors = [];
+    const fontColors = [];
+    for (let i = 0; i < n; i++) {
+        const isHighlight = i === pivotRow;
+        fillColors.push(isHighlight ? 'rgba(0,240,255,0.12)' : (i % 2 === 0 ? '#0d1120' : '#111827'));
+        fontColors.push(isHighlight ? '#67e8f9' : '#9ca3af');
+    }
+    const colFill = headerVals.map(() => fillColors);
+    const colFont = headerVals.map(() => fontColors);
+
+    Plotly.react('plot', [{
+        type: 'table',
+        header: {
+            values: headerVals,
+            align: 'center',
+            fill: { color: '#0d1120' },
+            font: { color: '#6b7280', size: 11, family: 'Inter, sans-serif' },
+            line: { color: 'rgba(255,255,255,0.08)', width: 1 },
+            height: 28,
+        },
+        cells: {
+            values: cellVals,
+            align: 'center',
+            fill: { color: colFill },
+            font: { color: colFont, size: 12, family: 'monospace' },
+            line: { color: 'rgba(255,255,255,0.06)', width: 1 },
+            height: 32,
+        },
+    }], {
+        ...baseLayout,
+        title: { text: `МНК: нормальные уравнения (степень ${deg})`, font: { color: '#9ca3af', size: 13 } },
+        margin: { t: 50, r: 20, b: 10, l: 20 },
+    }, { responsive: true, displayModeBar: false });
+}
+
+// ─── Task 8: Дифференцирование ────────────────────────────────────────────────
+
+function _drawStepDiff(index, steps) {
+    if (!steps || !steps.length) return;
+    const visible = steps.slice(0, index + 1);
+    const xs = visible.map(s => s.x);
+    const dy1 = visible.map(s => s.dy1);
+    const dy2 = visible.map(s => s.dy2);
+    const colors1 = visible.map((_, i) => i === index ? '#00f0ff' : 'rgba(0,240,255,0.35)');
+    const colors2 = visible.map((_, i) => i === index ? '#ff3366' : 'rgba(255,51,102,0.35)');
+
+    const s = steps[index];
+
+    Plotly.react('plot', [
+        {
+            x: xs, y: dy1,
+            type: 'bar', name: "y'",
+            marker: { color: colors1 },
+            offsetgroup: 1,
+        },
+        {
+            x: xs, y: dy2,
+            type: 'bar', name: "y''",
+            marker: { color: colors2 },
+            offsetgroup: 2,
+        }
+    ], {
+        ...baseLayout,
+        barmode: 'group',
+        xaxis: { ...baseLayout.xaxis, title: 'x' },
+        yaxis: { ...baseLayout.yaxis, title: 'Производная' },
+        title: { text: `Численное дифференцирование (узел i=${s.i})`, font: { color: '#9ca3af', size: 13 } },
+        annotations: [{
+            xref: 'paper', yref: 'paper', x: 0.5, y: -0.12, xanchor: 'center', yanchor: 'top',
+            text: `Формула: ${s.formula} | y'=${s.dy1 != null ? s.dy1.toFixed(6) : ''} | y''=${s.dy2 != null ? s.dy2.toFixed(6) : ''}`,
+            showarrow: false, font: { color: '#9ca3af', size: 11 }
+        }],
+        showlegend: true,
+        legend: { font: { color: '#9ca3af' }, bgcolor: 'rgba(0,0,0,0)' },
+        margin: { t: 40, r: 20, b: 60, l: 40 },
+    }, { responsive: true, displayModeBar: false });
+}
+
+// ─── Task 9: Симпсон ──────────────────────────────────────────────────────────
+
+function _drawStepSimpson(index, steps, extra) {
+    if (!extra || !extra.curveX) return;
+    const s = steps[index];
+
+    const traces = [];
+
+    // Базовая кривая f(x)
+    traces.push({
+        x: extra.curveX, y: extra.curveY,
+        type: 'scatter', mode: 'lines', name: 'f(x)',
+        line: { color: 'rgba(156,163,175,0.5)', width: 2 }
+    });
+
+    // Параболические дуги последнего разбиения (из extra)
+    if (extra.segX && extra.segX.length) {
+        traces.push({
+            x: extra.segX, y: extra.segY,
+            type: 'scatter', mode: 'lines', name: 'Параболы',
+            fill: 'tozeroy',
+            fillcolor: 'rgba(0,240,255,0.12)',
+            line: { color: '#00f0ff', width: 1.5 }
+        });
+    }
+
+    const titleText = s
+        ? `k=${s.k}, n=${s.n}, h=${s.h.toFixed(5)}, S≈${s.s.toFixed(7)}, err=${s.diff > 0 ? s.diff.toExponential(2) : '—'}`
+        : 'Метод Симпсона';
+
+    Plotly.react('plot', traces, {
+        ...baseLayout,
+        xaxis: { ...baseLayout.xaxis, title: 'x' },
+        yaxis: { ...baseLayout.yaxis, title: 'f(x)' },
+        title: { text: titleText, font: { color: '#9ca3af', size: 13 } },
+        showlegend: true,
+        legend: { font: { color: '#9ca3af' }, bgcolor: 'rgba(0,0,0,0)' },
+    }, { responsive: true, displayModeBar: false });
+}
+
+// ─── Task 10: Задача Коши ─────────────────────────────────────────────────────
+
+function _drawStepCauchy(index, steps) {
+    if (!steps || !steps.length) return;
+    const visible = steps.slice(0, index + 1);
+    const xs = visible.map(s => s.x);
+    const yRK4 = visible.map(s => s.y_rk4);
+    const yAdams = visible.map(s => s.y_adams);
+    const hasAdams = visible.some(s => s.phase === 'adams');
+
+    const s = steps[index];
+
+    const traces = [
+        {
+            x: xs, y: yRK4,
+            type: 'scatter', mode: 'lines+markers', name: 'РК4',
+            line: { color: '#00f0ff', width: 2 },
+            marker: { color: '#00f0ff', size: 5 }
+        }
+    ];
+
+    if (hasAdams) {
+        const adamsXs = visible.filter(st => st.phase === 'adams').map(st => st.x);
+        const adamsYs = visible.filter(st => st.phase === 'adams').map(st => st.y_adams);
+        traces.push({
+            x: adamsXs, y: adamsYs,
+            type: 'scatter', mode: 'lines+markers', name: 'Адамс',
+            line: { color: '#ff3366', width: 2, dash: 'dot' },
+            marker: { color: '#ff3366', size: 5 }
+        });
+    }
+
+    const titleText = s
+        ? `x=${s.x.toFixed(4)}, y_RK4=${s.y_rk4.toFixed(6)}` + (s.phase === 'adams' ? `, y_Adams=${s.y_adams.toFixed(6)}` : '')
+        : 'Задача Коши';
+
+    Plotly.react('plot', traces, {
+        ...baseLayout,
+        xaxis: { ...baseLayout.xaxis, title: 'x' },
+        yaxis: { ...baseLayout.yaxis, title: 'y' },
+        title: { text: titleText, font: { color: '#9ca3af', size: 13 } },
+        showlegend: true,
+        legend: { font: { color: '#9ca3af' }, bgcolor: 'rgba(0,0,0,0)' },
+    }, { responsive: true, displayModeBar: false });
+}
+
+// ─── Task 11: Краевая задача ──────────────────────────────────────────────────
+
+function _drawStepBVP(index, steps, extra) {
+    if (!steps || !steps.length) return;
+    const s = steps[index];
+    if (!s) return;
+
+    if (s.phase === 'build') {
+        // Показываем построение матрицы СЛАУ — строка за строкой
+        const buildVisible = steps.slice(0, index + 1).filter(st => st.phase === 'build');
+        const n = buildVisible.length;
+        const idxVals  = buildVisible.map(st => st.row_idx ?? 0);
+        const xVals    = buildVisible.map(st => (st.x != null ? st.x.toFixed(4) : ''));
+        const rhsVals  = buildVisible.map(st => (st.rhs != null ? st.rhs.toFixed(6) : ''));
+        const coefVals = buildVisible.map(st =>
+            (st.mat_row ?? []).filter(v => Math.abs(v) > 1e-12).map(v => v.toFixed(4)).join('  ')
+        );
+
+        const fill = buildVisible.map((_, i) =>
+            i === n - 1 ? 'rgba(0,240,255,0.12)' : (i % 2 === 0 ? '#0d1120' : '#111827')
+        );
+        const font = buildVisible.map((_, i) =>
+            i === n - 1 ? '#67e8f9' : '#9ca3af'
+        );
+
+        Plotly.react('plot', [{
+            type: 'table',
+            header: {
+                values: [['i'], ['xᵢ'], ['RHS'], ['Ненулевые коэф.']],
+                align: ['center','center','center','left'],
+                fill: { color: '#0d1120' },
+                font: { color: '#6b7280', size: 11, family: 'Inter, sans-serif' },
+                line: { color: 'rgba(255,255,255,0.08)', width: 1 },
+                height: 28,
+            },
+            cells: {
+                values: [idxVals, xVals, rhsVals, coefVals],
+                align: ['center','center','center','left'],
+                fill: { color: [fill, fill, fill, fill] },
+                font: { color: [font, font, font, font], size: 11, family: 'monospace' },
+                line: { color: 'rgba(255,255,255,0.06)', width: 1 },
+                height: 28,
+            },
+        }], {
+            ...baseLayout,
+            title: { text: `КЗ: формирование матрицы (строка ${s.row_idx ?? 0})`, font: { color: '#9ca3af', size: 13 } },
+            margin: { t: 50, r: 20, b: 10, l: 20 },
+        }, { responsive: true, displayModeBar: false });
+        return;
+    }
+
+    if (s.phase === 'gauss_forward') {
+        _drawStepGauss(index, steps);
+        return;
+    }
+
+    if (s.phase === 'gauss_backward') {
+        const allX = extra?.x ?? [];
+        const allY = extra?.solution ?? [];
+        const computed = steps.slice(0, index + 1).filter(st => st.phase === 'gauss_backward').length;
+        const visX = allX.slice(allX.length - computed);
+        const visY = allY.slice(allY.length - computed);
+
+        Plotly.react('plot', [
+            {
+                x: allX, y: allY,
+                type: 'scatter', mode: 'lines', name: 'y(x) (итог)',
+                line: { color: 'rgba(156,163,175,0.15)', width: 1 }
+            },
+            {
+                x: visX, y: visY,
+                type: 'scatter', mode: 'markers', name: 'вычислено',
+                marker: { color: '#00f0ff', size: 7 }
+            }
+        ], {
+            ...baseLayout,
+            xaxis: { ...baseLayout.xaxis, title: 'x' },
+            yaxis: { ...baseLayout.yaxis, title: 'y' },
+            title: { text: `КЗ: обратный ход — вычислено ${computed} из ${allX.length} узлов`, font: { color: '#9ca3af', size: 13 } },
+            showlegend: true,
+            legend: { font: { color: '#9ca3af' }, bgcolor: 'rgba(0,0,0,0)' },
+        }, { responsive: true, displayModeBar: false });
+        return;
+    }
+
+    // Финал — полное решение
+    const allX = extra?.x ?? [];
+    const allY = extra?.solution ?? [];
+    if (allX.length && allY.length) {
+        Plotly.react('plot', [{
+            x: allX, y: allY,
+            type: 'scatter', mode: 'lines+markers', name: 'y(x)',
+            line: { color: '#00f0ff', width: 2 },
+            marker: { color: '#00f0ff', size: 6 }
+        }], {
+            ...baseLayout,
+            xaxis: { ...baseLayout.xaxis, title: 'x' },
+            yaxis: { ...baseLayout.yaxis, title: 'y' },
+            title: { text: 'Краевая задача: решение', font: { color: '#9ca3af', size: 13 } },
+        }, { responsive: true, displayModeBar: false });
+    }
 }

@@ -13,6 +13,7 @@ type NewtonStep struct {
 	XPrev float64
 	XNew  float64
 	Fx    float64
+	DFx   float64 // значение производной f'(x_prev)
 }
 
 type NewtonMethodCalculator struct {
@@ -77,7 +78,7 @@ func (c *NewtonMethodCalculator) Calculate() ([]NewtonStep, float64, int, error)
 		}
 
 		xNew := x - fx/dfx
-		steps = append(steps, NewtonStep{XPrev: x, XNew: xNew, Fx: fx})
+		steps = append(steps, NewtonStep{XPrev: x, XNew: xNew, Fx: fx, DFx: dfx})
 
 		// Проверка на точность
 		if math.Abs(xNew-x) < c.Epsilon {
